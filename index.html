@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Afiliados por Establecimiento — USPP Satipo (Uso Interno)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css" />
+<script src="assets/vendor/chartjs/chart.umd.js"></script>
+<style>
+  :root{
+    --navy:#1B4A6E; --navy-2:#25232A; --blue:#255F8C; --teal:#E49C30;
+    --azulclaro:#E4EEF3; --papel:#F5F3EC; --borde:#E4E1D6;
+    --texto:#25232A; --muted:#65626A;
+    --verde:#0E9F6E; --ambar:#D97706; --rojo:#DC2626; --morado:#6D4FC2;
+    --f-display:'Space Grotesk',sans-serif; --f-dato:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'IBM Plex Sans',sans-serif;background:var(--papel);color:var(--texto)}
+  a{color:inherit}
+
+  .aviso-interno{background:#3B1A1A;color:#FFD9C7;text-align:center;padding:.55rem 1rem;font-size:.78rem;font-weight:700;letter-spacing:.02em}
+  .aviso-interno b{color:#FF9F7A}
+
+  header{background:linear-gradient(155deg,#18171B 0%,var(--navy-2) 40%,var(--navy) 100%);padding:16px 22px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand img{height:38px}
+  .brand h1{margin:0;font-family:var(--f-display);font-size:16px;color:#fff}
+  .brand .sub{font-size:11px;color:rgba(255,255,255,.6)}
+
+  .wrap{max-width:1500px;margin:0 auto;padding:18px 22px 60px}
+
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+  .kpi{background:#fff;border:1px solid var(--borde);border-radius:13px;padding:14px 16px}
+  .kpi .klabel{font-family:var(--f-dato);font-size:10px;text-transform:uppercase;color:var(--muted);letter-spacing:.05em;margin-bottom:4px}
+  .kpi .kval{font-family:var(--f-display);font-size:26px;font-weight:700;color:var(--navy)}
+  .kpi .ksub{font-size:11px;color:var(--muted);margin-top:2px}
+
+  .shell{display:grid;grid-template-columns:380px 1fr;gap:14px;align-items:start}
+  @media(max-width:980px){.shell{grid-template-columns:1fr}}
+
+  .panel{background:#fff;border:1px solid var(--borde);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;height:min(76vh,700px)}
+  .panel-search{padding:14px 16px 10px;border-bottom:1px solid var(--borde)}
+  .panel-search input{width:100%;padding:9px 12px;border:1.5px solid var(--borde);border-radius:9px;font-size:13px;background:var(--papel)}
+  .panel-orden{display:flex;gap:6px;padding:8px 16px;border-bottom:1px solid var(--borde);font-size:11px}
+  .panel-orden button{flex:1;padding:6px 4px;border:1px solid var(--borde);background:#fff;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600;color:var(--muted)}
+  .panel-orden button.activo{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .lista-head{padding:8px 16px;font-family:var(--f-dato);font-size:11px;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--borde)}
+  .lista{flex:1;overflow-y:auto;padding:6px}
+  .item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;border:1px solid transparent}
+  .item:hover{background:var(--papel)}
+  .item.activo{background:var(--azulclaro);border-color:var(--navy)}
+  .item-nombre{font-size:12.5px;font-weight:700;line-height:1.3}
+  .item-sub{font-size:10.5px;color:var(--muted)}
+  .item-badge{font-family:var(--f-dato);font-size:10px;font-weight:700;color:#7A4D0A;background:#FBEACB;padding:1px 6px;border-radius:999px;margin-top:2px;display:inline-block}
+  .item-num{font-family:var(--f-dato);font-weight:700;color:var(--navy);font-size:13px;white-space:nowrap}
+  .item-cero{opacity:.5}
+
+  #mapa{height:min(76vh,700px);border-radius:14px;border:1px solid var(--borde)}
+
+  .ficha{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:18px 20px;margin-top:14px}
+  .ficha-vacia{text-align:center;color:var(--muted);padding:40px 20px;font-size:13px}
+  .ficha-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--borde);padding-bottom:12px;margin-bottom:14px}
+  .ficha-nombre{font-family:var(--f-display);font-size:19px;font-weight:700}
+  .ficha-meta{font-size:12px;color:var(--muted);margin-top:3px}
+  .ficha-badge-punto{display:inline-block;margin-top:6px;font-family:var(--f-dato);font-size:10.5px;font-weight:700;color:#7A4D0A;background:#FBEACB;padding:2px 8px;border-radius:999px}
+  .btn-descargar{background:var(--navy);color:#fff;border:none;padding:11px 18px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+  .btn-descargar:hover{background:var(--blue)}
+  .btn-descargar[disabled],.btn-descargar.deshabilitado{background:#C8C4B6;cursor:not-allowed;pointer-events:none}
+
+  .ficha-total{text-align:center;padding:10px 0}
+  .ficha-total b{font-family:var(--f-display);font-size:38px;color:var(--navy);display:block}
+  .ficha-total span{font-family:var(--f-dato);font-size:11px;color:var(--muted);text-transform:uppercase}
+
+  .graficos{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px}
+  @media(max-width:900px){.graficos{grid-template-columns:1fr}}
+  .grafico-card{border:1px solid var(--borde);border-radius:12px;padding:12px}
+  .grafico-card h4{margin:0 0 8px;font-size:11.5px;text-transform:uppercase;color:var(--muted);font-family:var(--f-dato)}
+  .grafico-card canvas{max-height:180px}
+
+  .leaflet-popup-content{font-family:'IBM Plex Sans',sans-serif;font-size:12.5px}
+  .marker-punto{background:#E49C30;border:2.5px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(184,118,21,.5)}
+  .marker-normal{border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+</style>
+</head>
+<body>
+
+<div class="aviso-interno">🔒 Herramienta de <b>uso interno</b> — contiene datos personales de asegurados. No compartir esta pantalla ni subir esta carpeta a internet.</div>
+
+<header>
+  <div class="brand">
+    <img src="assets/img/logo-uspp-icon.png" alt="USPP" onerror="this.style.display='none'">
+    <div><h1>Afiliados por Establecimiento</h1><div class="sub">USPP · Red de Salud Satipo — Uso Interno</div></div>
+  </div>
+  <div id="fechaCorte" style="color:rgba(255,255,255,.7);font-size:11.5px;font-family:var(--f-dato)"></div>
+</header>
+
+<div class="wrap">
+  <div class="kpis">
+    <div class="kpi"><div class="klabel">Total Afiliados</div><div class="kval" id="kpiTotal">—</div><div class="ksub">Provincia de Satipo</div></div>
+    <div class="kpi"><div class="klabel">Establecimientos</div><div class="kval" id="kpiEstabs">—</div><div class="ksub">Con población adscrita</div></div>
+    <div class="kpi"><div class="klabel">Sin Adscripción</div><div class="kval" id="kpiSinAdscripcion">—</div><div class="ksub" id="kpiSinAdscripcionSub">—</div></div>
+    <div class="kpi"><div class="klabel">Puntos de Digitación</div><div class="kval" id="kpiPuntos">—</div><div class="ksub">Con datos de afiliados</div></div>
+  </div>
+
+  <div class="shell">
+    <div class="panel">
+      <div class="panel-search"><input id="buscador" placeholder="🔍 Buscar establecimiento o distrito..."></div>
+      <div class="panel-orden">
+        <button class="activo" data-orden="afiliados">Más afiliados</button>
+        <button data-orden="alfabetico">A-Z</button>
+        <button data-orden="puntos">Puntos primero</button>
+      </div>
+      <div class="lista-head" id="contador">91 establecimientos</div>
+      <div class="lista" id="lista"></div>
+    </div>
+    <div id="mapa"></div>
+  </div>
+
+  <div class="ficha" id="ficha">
+    <div class="ficha-vacia">👆 Selecciona un establecimiento en la lista o en el mapa para ver el detalle de sus afiliados.</div>
+  </div>
+</div>
+
+<script src="assets/vendor/leaflet/leaflet.js"></script>
+<script src="assets/js/dashboard.js"></script>
+</body>
+</html>
