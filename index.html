@@ -2,128 +2,120 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Afiliados por Establecimiento — USPP Satipo (Uso Interno)</title>
+<title>Satipo: Composición de la población afiliada al SIS — USPP</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
 <script src="assets/vendor/chartjs/chart.umd.js"></script>
 <style>
-  :root{
-    --navy:#1B4A6E; --navy-2:#25232A; --blue:#255F8C; --teal:#E49C30;
-    --azulclaro:#E4EEF3; --papel:#F5F3EC; --borde:#E4E1D6;
-    --texto:#25232A; --muted:#65626A;
-    --verde:#0E9F6E; --ambar:#D97706; --rojo:#DC2626; --morado:#6D4FC2;
-    --f-display:'Space Grotesk',sans-serif; --f-dato:'IBM Plex Mono',monospace;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:'IBM Plex Sans',sans-serif;background:var(--papel);color:var(--texto)}
-  a{color:inherit}
-
-  .aviso-interno{background:#3B1A1A;color:#FFD9C7;text-align:center;padding:.55rem 1rem;font-size:.78rem;font-weight:700;letter-spacing:.02em}
-  .aviso-interno b{color:#FF9F7A}
-
-  header{background:linear-gradient(155deg,#18171B 0%,var(--navy-2) 40%,var(--navy) 100%);padding:16px 22px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand img{height:38px}
-  .brand h1{margin:0;font-family:var(--f-display);font-size:16px;color:#fff}
-  .brand .sub{font-size:11px;color:rgba(255,255,255,.6)}
-
-  .wrap{max-width:1500px;margin:0 auto;padding:18px 22px 60px}
-
-  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
-  .kpi{background:#fff;border:1px solid var(--borde);border-radius:13px;padding:14px 16px}
-  .kpi .klabel{font-family:var(--f-dato);font-size:10px;text-transform:uppercase;color:var(--muted);letter-spacing:.05em;margin-bottom:4px}
-  .kpi .kval{font-family:var(--f-display);font-size:26px;font-weight:700;color:var(--navy)}
-  .kpi .ksub{font-size:11px;color:var(--muted);margin-top:2px}
-
-  .shell{display:grid;grid-template-columns:380px 1fr;gap:14px;align-items:start}
-  @media(max-width:980px){.shell{grid-template-columns:1fr}}
-
-  .panel{background:#fff;border:1px solid var(--borde);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;height:min(76vh,700px)}
-  .panel-search{padding:14px 16px 10px;border-bottom:1px solid var(--borde)}
-  .panel-search input{width:100%;padding:9px 12px;border:1.5px solid var(--borde);border-radius:9px;font-size:13px;background:var(--papel)}
-  .panel-orden{display:flex;gap:6px;padding:8px 16px;border-bottom:1px solid var(--borde);font-size:11px}
-  .panel-orden button{flex:1;padding:6px 4px;border:1px solid var(--borde);background:#fff;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600;color:var(--muted)}
-  .panel-orden button.activo{background:var(--navy);color:#fff;border-color:var(--navy)}
-  .lista-head{padding:8px 16px;font-family:var(--f-dato);font-size:11px;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--borde)}
-  .lista{flex:1;overflow-y:auto;padding:6px}
-  .item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;border:1px solid transparent}
-  .item:hover{background:var(--papel)}
-  .item.activo{background:var(--azulclaro);border-color:var(--navy)}
-  .item-nombre{font-size:12.5px;font-weight:700;line-height:1.3}
-  .item-sub{font-size:10.5px;color:var(--muted)}
-  .item-badge{font-family:var(--f-dato);font-size:10px;font-weight:700;color:#7A4D0A;background:#FBEACB;padding:1px 6px;border-radius:999px;margin-top:2px;display:inline-block}
-  .item-num{font-family:var(--f-dato);font-weight:700;color:var(--navy);font-size:13px;white-space:nowrap}
-  .item-cero{opacity:.5}
-
-  #mapa{height:min(76vh,700px);border-radius:14px;border:1px solid var(--borde)}
-
-  .ficha{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:18px 20px;margin-top:14px}
-  .ficha-vacia{text-align:center;color:var(--muted);padding:40px 20px;font-size:13px}
-  .ficha-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--borde);padding-bottom:12px;margin-bottom:14px}
-  .ficha-nombre{font-family:var(--f-display);font-size:19px;font-weight:700}
-  .ficha-meta{font-size:12px;color:var(--muted);margin-top:3px}
-  .ficha-badge-punto{display:inline-block;margin-top:6px;font-family:var(--f-dato);font-size:10.5px;font-weight:700;color:#7A4D0A;background:#FBEACB;padding:2px 8px;border-radius:999px}
-  .btn-descargar{background:var(--navy);color:#fff;border:none;padding:11px 18px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
-  .btn-descargar:hover{background:var(--blue)}
-  .btn-descargar[disabled],.btn-descargar.deshabilitado{background:#C8C4B6;cursor:not-allowed;pointer-events:none}
-
-  .ficha-total{text-align:center;padding:10px 0}
-  .ficha-total b{font-family:var(--f-display);font-size:38px;color:var(--navy);display:block}
-  .ficha-total span{font-family:var(--f-dato);font-size:11px;color:var(--muted);text-transform:uppercase}
-
-  .graficos{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px}
-  @media(max-width:900px){.graficos{grid-template-columns:1fr}}
-  .grafico-card{border:1px solid var(--borde);border-radius:12px;padding:12px}
-  .grafico-card h4{margin:0 0 8px;font-size:11.5px;text-transform:uppercase;color:var(--muted);font-family:var(--f-dato)}
-  .grafico-card canvas{max-height:180px}
-
-  .leaflet-popup-content{font-family:'IBM Plex Sans',sans-serif;font-size:12.5px}
-  .marker-punto{background:#E49C30;border:2.5px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(184,118,21,.5)}
-  .marker-normal{border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+:root{
+  --azul:#586fb4;--azul2:#405895;--celeste:#55b7df;--verde:#a8cb3b;--naranja:#f5a444;--rosa:#dc3388;
+  --morado:#7d63bb;--gris:#eef1f8;--borde:#dfe4f0;--texto:#24304b;--muted:#667085;--blanco:#fff;
+  --f:'IBM Plex Sans',Arial,sans-serif;--fd:'Space Grotesk','IBM Plex Sans',sans-serif;
+}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:var(--f);color:var(--texto);background:#f7f9fd}
+body{padding-bottom:18px}.top-note{height:0;overflow:hidden}
+.hero{position:relative;overflow:hidden;background:linear-gradient(125deg,#fff 0%,#fff 70%,#f3f5fb 70%);padding:0 28px 9px;border-bottom:1px solid #e8ebf4}
+.hero:after{content:"";position:absolute;right:-30px;top:0;width:230px;height:95px;background:var(--azul2);clip-path:polygon(40% 0,100% 0,100% 100%,0 100%)}
+.hero-inner{max-width:1450px;margin:auto;text-align:center;position:relative;z-index:2;padding-top:2px}
+.title{margin:0;font-family:var(--fd);font-size:30px;line-height:1.15;color:var(--azul);font-weight:700}.title span{display:block;margin-top:5px;font-size:27px}
+.section-label{display:inline-block;margin-top:12px;padding:0 10px 5px;border-bottom:5px solid var(--celeste);font-family:var(--fd);font-size:21px;font-weight:700;color:var(--azul)}
+.accent-line{height:4px;max-width:600px;margin:0 auto;background:linear-gradient(90deg,var(--celeste) 0 40%,var(--verde) 40% 60%,var(--naranja) 60% 80%,var(--rosa) 80% 100%);border-radius:4px}
+.wrap{max-width:1450px;margin:0 auto;padding:8px 28px 0}.filters{display:grid;grid-template-columns:180px 250px minmax(220px,1fr) 70px;gap:10px;background:#eef1fa;border-radius:13px;padding:7px 14px;margin-bottom:9px;align-items:center}
+.filter{background:#fff;border:1px solid #d9deea;border-radius:9px;padding:5px 11px}.filter label{display:block;color:var(--azul);font-size:10px;font-weight:700;margin-bottom:2px}.filter select{width:100%;border:0;outline:0;background:#fff;color:#4c5871;font-size:12px;font-family:var(--f);cursor:pointer}.clear{height:57px;border:1px solid #e3c7df;background:#fff;border-radius:10px;color:var(--rosa);font-size:19px;font-weight:700;cursor:pointer}.clear:hover{background:#fff2f8}
+.grid-main{display:grid;grid-template-columns:1.9fr .95fr;gap:10px}.left{min-width:0}.row-top{display:grid;grid-template-columns:245px 1.05fr 1.05fr;gap:10px;margin-bottom:10px}.card{background:#fff;border:1px solid var(--borde);border-radius:11px;overflow:hidden;box-shadow:0 1px 1px rgba(32,48,85,.02)}.card-title{height:28px;background:#e9edfa;color:var(--azul);font-size:13px;font-weight:700;text-align:center;display:flex;align-items:center;justify-content:center}.total-card{min-height:163px;text-align:center}.total-num{font-family:var(--fd);font-size:34px;color:var(--azul);font-weight:600;margin-top:20px}.total-sub{font-size:12px;color:var(--muted);margin-top:4px}.cut-note{font-size:10px;color:#8a93a7;margin-top:16px}.chart-wrap{padding:8px 12px 9px;height:133px}.chart-wrap canvas{width:100%!important;height:100%!important}
+.sex-card .chart-wrap{height:133px}.sex-summary{display:flex;justify-content:center;gap:20px;font-size:11px;margin-top:-1px}.sex-summary b{font-size:13px}.sex-f{color:var(--rosa)}.sex-m{color:var(--azul)}
+.middle-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}.wide-card{min-width:0}.age-card .chart-wrap{height:172px}.pop-card .chart-wrap{height:172px}.pop-card{grid-column:span 2}.pop-card .chart-wrap{height:210px}
+.bottom-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:10px}.district-card .chart-wrap{height:285px}.year-card .chart-wrap{height:285px}
+.map-card{min-width:0}.map-title{height:28px;background:#edf0fb;color:var(--azul);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}.map-box{height:510px;position:relative}.map-box #mapa{height:100%;width:100%}.map-legend{position:absolute;z-index:600;left:10px;bottom:10px;background:rgba(255,255,255,.95);border:1px solid #d9deea;border-radius:9px;padding:7px 9px;font-size:10px;line-height:1.6;box-shadow:0 2px 8px rgba(0,0,0,.08)}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;border:1px solid #fff;box-shadow:0 0 0 1px #bbb}.d-punto{background:var(--naranja)}.d-alto{background:var(--rosa)}.d-normal{background:#4a90cc}
+.side-detail{padding:10px;border-top:1px solid var(--borde);min-height:105px}.side-detail.empty{text-align:center;color:var(--muted);font-size:11px;padding:18px}.side-name{font-weight:700;font-size:12px}.side-meta{font-size:10px;color:var(--muted);margin-top:2px}.side-total{font-family:var(--fd);font-size:23px;color:var(--azul);font-weight:700;margin-top:6px}.side-actions{display:flex;gap:6px;margin-top:5px}.side-actions a{background:var(--azul);color:#fff;text-decoration:none;border-radius:6px;padding:5px 8px;font-size:10px;font-weight:700}.side-actions button{background:#f2f4f8;border:1px solid #d9deea;border-radius:6px;padding:5px 8px;font-size:10px;color:var(--texto);cursor:pointer}
+.footer{margin-top:9px;background:#5268ad;color:#fff;border-radius:36px 36px 0 0;min-height:49px;padding:9px 25px;display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;font-size:9px}.footer .note{line-height:1.4}.footer .source{text-align:center}.footer img{height:30px;justify-self:end;object-fit:contain;max-width:150px}
+.marker-punto{border:2px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(184,118,21,.55)}.marker-normal{border:2px solid #fff;border-radius:50%;box-shadow:0 1px 5px rgba(0,0,0,.3)}
+.leaflet-control{font-family:var(--f)}.leaflet-popup-content{font-size:11px}.popup-name{font-weight:700;color:var(--azul)}.popup-total{font-family:var(--fd);font-size:16px;font-weight:700}
+@media(max-width:1100px){.grid-main{grid-template-columns:1fr}.map-box{height:440px}.filters{grid-template-columns:1fr 1fr 1fr 58px}.row-top{grid-template-columns:1fr 1fr}.total-card{grid-column:span 2}.bottom-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.hero{padding-left:12px;padding-right:12px}.title{font-size:21px}.title span{font-size:19px}.section-label{font-size:17px}.wrap{padding-left:10px;padding-right:10px}.filters{grid-template-columns:1fr 1fr;padding:8px}.clear{height:51px}.row-top,.middle-grid{grid-template-columns:1fr}.total-card,.pop-card{grid-column:auto}.bottom-grid{grid-template-columns:1fr}.footer{grid-template-columns:1fr;text-align:center;border-radius:18px}.footer img{justify-self:center}.map-box{height:360px}}
 </style>
 </head>
 <body>
-
-<div class="aviso-interno">🔒 Herramienta de <b>uso interno</b> — contiene datos personales de asegurados. No compartir esta pantalla ni subir esta carpeta a internet.</div>
-
-<header>
-  <div class="brand">
-    <img src="assets/img/logo-uspp-icon.png" alt="USPP" onerror="this.style.display='none'">
-    <div><h1>Afiliados por Establecimiento</h1><div class="sub">USPP · Red de Salud Satipo — Uso Interno</div></div>
+<header class="hero">
+  <div class="hero-inner">
+    <h1 class="title">Satipo: Composición de la población afiliada<span>al SIS - agosto 2026</span></h1>
+    <div class="section-label">ADSCRIPCIÓN</div>
+    <div class="accent-line"></div>
   </div>
-  <div id="fechaCorte" style="color:rgba(255,255,255,.7);font-size:11.5px;font-family:var(--f-dato)"></div>
 </header>
 
-<div class="wrap">
-  <div class="kpis">
-    <div class="kpi"><div class="klabel">Total Afiliados</div><div class="kval" id="kpiTotal">—</div><div class="ksub">Provincia de Satipo</div></div>
-    <div class="kpi"><div class="klabel">Establecimientos</div><div class="kval" id="kpiEstabs">—</div><div class="ksub">Con población adscrita</div></div>
-    <div class="kpi"><div class="klabel">Sin Adscripción</div><div class="kval" id="kpiSinAdscripcion">—</div><div class="ksub" id="kpiSinAdscripcionSub">—</div></div>
-    <div class="kpi"><div class="klabel">Puntos de Digitación</div><div class="kval" id="kpiPuntos">—</div><div class="ksub">Con datos de afiliados</div></div>
-  </div>
+<main class="wrap">
+  <section class="filters" aria-label="Filtros">
+    <div class="filter"><label>Mes</label><select id="filtroMes"><option value="Agosto">Agosto</option></select></div>
+    <div class="filter"><label>Fecha corte</label><select id="filtroCorte"><option id="opCorte">31/08/2026</option></select></div>
+    <div class="filter"><label>Distrito</label><select id="filtroDistrito"><option value="Todos">Todos</option></select></div>
+    <button class="clear" id="limpiarFiltros" title="Borrar filtros">×</button>
+  </section>
 
-  <div class="shell">
-    <div class="panel">
-      <div class="panel-search"><input id="buscador" placeholder="🔍 Buscar establecimiento o distrito..."></div>
-      <div class="panel-orden">
-        <button class="activo" data-orden="afiliados">Más afiliados</button>
-        <button data-orden="alfabetico">A-Z</button>
-        <button data-orden="puntos">Puntos primero</button>
+  <section class="grid-main">
+    <div class="left">
+      <div class="row-top">
+        <article class="card total-card">
+          <div class="card-title">Afiliados</div>
+          <div class="total-num" id="kpiTotal">—</div>
+          <div class="total-sub" id="totalSub">Provincia de Satipo</div>
+          <div class="cut-note" id="corteNota">Información al 31/08/2026</div>
+        </article>
+        <article class="card sex-card">
+          <div class="card-title">Afiliados por sexo</div>
+          <div class="chart-wrap"><canvas id="chartSexo"></canvas></div>
+          <div class="sex-summary"><span class="sex-f">● Mujer <b id="sexF">—</b></span><span class="sex-m">● Hombre <b id="sexM">—</b></span></div>
+        </article>
+        <article class="card">
+          <div class="card-title">Afiliados por grupo poblacional</div>
+          <div class="chart-wrap"><canvas id="chartPoblacionMini"></canvas></div>
+        </article>
       </div>
-      <div class="lista-head" id="contador">91 establecimientos</div>
-      <div class="lista" id="lista"></div>
-    </div>
-    <div id="mapa"></div>
-  </div>
 
-  <div class="ficha" id="ficha">
-    <div class="ficha-vacia">👆 Selecciona un establecimiento en la lista o en el mapa para ver el detalle de sus afiliados.</div>
-  </div>
-</div>
+      <div class="middle-grid">
+        <article class="card age-card">
+          <div class="card-title">Afiliados al SIS por grupo de edad</div>
+          <div class="chart-wrap"><canvas id="chartEdad"></canvas></div>
+        </article>
+        <article class="card">
+          <div class="card-title">Afiliados por distrito</div>
+          <div class="chart-wrap"><canvas id="chartDistritoMini"></canvas></div>
+        </article>
+        <article class="card pop-card">
+          <div class="card-title">Principales grupos poblacionales</div>
+          <div class="chart-wrap"><canvas id="chartPoblacion"></canvas></div>
+        </article>
+      </div>
+
+      <div class="bottom-grid">
+        <article class="card district-card">
+          <div class="card-title">Afiliados por distrito</div>
+          <div class="chart-wrap"><canvas id="chartDistrito"></canvas></div>
+        </article>
+        <article class="card year-card">
+          <div class="card-title">Afiliaciones según año de afiliación</div>
+          <div class="chart-wrap"><canvas id="chartAnio"></canvas></div>
+        </article>
+      </div>
+    </div>
+
+    <aside class="card map-card">
+      <div class="map-title">Afiliados según establecimiento de salud</div>
+      <div class="map-box"><div id="mapa"></div><div class="map-legend"><div><i class="dot d-punto"></i>Punto de digitación</div><div><i class="dot d-alto"></i>&gt; 3,000 afiliados</div><div><i class="dot d-normal"></i>Otros establecimientos</div></div></div>
+      <div class="side-detail empty" id="detalle">Selecciona un establecimiento en el mapa para ver el detalle.</div>
+    </aside>
+  </section>
+
+  <footer class="footer">
+    <div class="note">Nota: Los totales corresponden a la base consolidada de afiliados de la provincia de Satipo.<br>La información mostrada es de uso interno de la Unidad de Seguros Públicos y Privados.</div>
+    <div class="source">Fuente: Base de Datos SIS<br><b>USPP · Red de Salud Satipo</b></div>
+    <img src="assets/img/logo-uspp-icon.png" alt="USPP" onerror="this.style.display='none'">
+  </footer>
+</main>
 
 <script src="assets/vendor/leaflet/leaflet.js"></script>
 <script src="assets/js/dashboard.js"></script>
