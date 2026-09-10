@@ -7,6 +7,9 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;',
 
 const PALETTE = ['#586fb4','#55b7df','#a8cb3b','#f5a444','#dc3388','#7d63bb','#6dbd8a','#9aa5b9','#ef7b72','#8a76c4'];
 const AGE_LABELS = {'1.NIÑO':'0 a 11 años','2.ADOLESCENTE':'12 a 17 años','3.JOVEN':'18 a 29 años','4.ADULTO':'30 a 59 años','5.ADULTO MAYOR':'60 a más'};
+Chart.defaults.font.family = 'IBM Plex Sans, Arial, sans-serif';
+Chart.defaults.font.size = 11;
+Chart.defaults.devicePixelRatio = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
 
 function agregarCapaBaseConRespaldo(mapa){
   const principal=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19});
@@ -42,18 +45,21 @@ function renderDashboard(){
   destruirCharts();
   CHARTS.sexo=new Chart($('chartSexo'),{type:'doughnut',data:{labels:['Mujer','Hombre'],datasets:[{data:[sx.Femenino||0,sx.Masculino||0],backgroundColor:['#dc3388','#586fb4'],borderWidth:0}]},options:{cutout:'58%',plugins:{legend:{position:'bottom',labels:{font:{size:9},boxWidth:8,padding:8}},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}}}});
 
-  const age=aggregate(arr,'grupo_etareo'), ageKeys=Object.keys(AGE_LABELS); CHARTS.edad=new Chart($('chartEdad'),{type:'bar',data:{labels:ageKeys.map(k=>AGE_LABELS[k]),datasets:[{data:ageKeys.map(k=>age[k]||0),backgroundColor:PALETTE,borderRadius:3}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:9},callback:v=>fmt(v)},grid:{color:'#edf0f6'}},y:{ticks:{font:{size:9}},grid:{display:false}}}}});
+  const clasif={};
+  arr.forEach(x=>{const k=(x.clasificacion||'Sin clasificar').trim(); clasif[k]=(clasif[k]||0)+Number(x.total_afiliados||0)});
+  const ce=Object.entries(clasif).sort((a,b)=>b[1]-a[1]);
+  const clasifLabels=ce.map(([k])=>k.replace(/CENTRO DE SALUD/gi,'C.S.').replace(/PUESTO DE SALUD/gi,'P.S.').replace(/HOSPITAL DE APOYO/gi,'Hospital').slice(0,24));
+  CHARTS.clasif=new Chart($('chartClasificacion'),{type:'bar',data:{labels:clasifLabels,datasets:[{data:ce.map(([,v])=>v),backgroundColor:['#586fb4','#55b7df','#a8cb3b','#f5a444','#dc3388'],borderRadius:4,barThickness:18}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:10},callback:v=>fmt(v)},grid:{color:'#edf0f6'}},y:{ticks:{font:{size:10}},grid:{display:false}}}}});
+
+  const age=aggregate(arr,'grupo_etareo'), ageKeys=Object.keys(AGE_LABELS); CHARTS.edad=new Chart($('chartEdad'),{type:'bar',data:{labels:ageKeys.map(k=>AGE_LABELS[k]),datasets:[{data:ageKeys.map(k=>age[k]||0),backgroundColor:PALETTE,borderRadius:3}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:10},callback:v=>fmt(v)},grid:{color:'#edf0f6'}},y:{ticks:{font:{size:10}},grid:{display:false}}}}});
 
   const popObj=ordenarObjeto(aggregate(arr,'grupo_poblacional')); const popEntries=Object.entries(popObj); const topPop=popEntries.slice(0,7), otherPop=popEntries.slice(7).reduce((s,[,v])=>s+v,0); if(otherPop)topPop.push(['Otros',otherPop]);
-  const popLabels=topPop.map(([k])=>k.replace(/\s*\(.*?\)/g,'').replace(/\s+/g,' ').trim()); const popVals=topPop.map(([,v])=>v);
-  CHARTS.pop=new Chart($('chartPoblacion'),{type:'bar',data:{labels:popLabels,datasets:[{data:popVals,backgroundColor:PALETTE,borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:9},callback:v=>fmt(v)},grid:{color:'#edf0f6'}},y:{ticks:{font:{size:9}},grid:{display:false}}}}});
-  CHARTS.popMini=new Chart($('chartPoblacionMini'),{type:'bar',data:{labels:topPop.slice(0,5).map(([k])=>k.replace(/\s*\(.*?\)/g,'').slice(0,19)),datasets:[{data:topPop.slice(0,5).map(([,v])=>v),backgroundColor:PALETTE,borderRadius:3}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw)}}},scales:{x:{display:false},y:{ticks:{font:{size:8}},grid:{display:false}}}}});
-
+  const abreviarPop=k=>k.replace(/\s*\(.*?\)/g,'').replace('AFILIACION PPDD','AFILIACIÓN PPDD').replace('AFILIACION MASIVA DE OFICIO','AFILIACIÓN MASIVA DE OFICIO').replace('ESCOLARES QALI WARMA','ESCOLARES QALI WARMA').replace('NIÑOS ENTRE 0 A 5 AÑOS','NIÑOS 0–5 AÑOS').replace('BENEFICIARIOS DE REPARACIONES EN SALUD','REPARACIONES EN SALUD').replace('PERSONAS INTERNAS INPE','PERSONAS INTERNAS INPE').replace('VULNERABILIDAD SANITARIA - DISCAPACIDAD SEVERA','DISCAPACIDAD SEVERA').replace(/\s+/g,' ').trim();
+  const popLabels=topPop.map(([k])=>abreviarPop(k)); const popVals=topPop.map(([,v])=>v);
+  CHARTS.pop=new Chart($('chartPoblacion'),{type:'bar',data:{labels:popLabels,datasets:[{data:popVals,backgroundColor:PALETTE,borderRadius:4,barThickness:21}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{title:c=>topPop[c[0].dataIndex]?.[0]||c[0].label,label:c=>`${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:10},callback:v=>fmt(v)},grid:{color:'#edf0f6'}},y:{ticks:{font:{size:10}},grid:{display:false}}}}});
   const dist={}; arr.forEach(x=>dist[x.distrito]=(dist[x.distrito]||0)+Number(x.total_afiliados||0)); const distObj=ordenarObjeto(dist); const de=Object.entries(distObj); const dl=de.map(([k])=>k), dv=de.map(([,v])=>v);
-  CHARTS.dist=new Chart($('chartDistrito'),{type:'bar',data:{labels:dl,datasets:[{data:dv,backgroundColor:PALETTE,borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:9},callback:v=>fmt(v)},grid:{color:'#edf0f6'}},y:{ticks:{font:{size:9}},grid:{display:false}}}}});
-  CHARTS.distMini=new Chart($('chartDistritoMini'),{type:'bar',data:{labels:de.slice(0,6).map(([k])=>k),datasets:[{data:de.slice(0,6).map(([,v])=>v),backgroundColor:PALETTE,borderRadius:3}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw)}}},scales:{x:{display:false},y:{ticks:{font:{size:8}},grid:{display:false}}}}});
-
-  const years=aggregate(arr,'por_anio_afil'), yk=Object.keys(years).sort((a,b)=>Number(a)-Number(b)); CHARTS.anio=new Chart($('chartAnio'),{type:'line',data:{labels:yk,datasets:[{data:yk.map(y=>years[y]),borderColor:'#586fb4',backgroundColor:'rgba(88,111,180,.12)',fill:true,tension:.28,pointRadius:2.5,pointBackgroundColor:'#586fb4'}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw)}}},scales:{x:{ticks:{font:{size:9}},grid:{display:false}},y:{ticks:{font:{size:9},callback:v=>fmt(v)},grid:{color:'#edf0f6'}}}}});
+  CHARTS.dist=new Chart($('chartDistrito'),{type:'bar',data:{labels:dl,datasets:[{data:dv,backgroundColor:PALETTE,borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:10},callback:v=>fmt(v)},grid:{color:'#edf0f6'}},y:{ticks:{font:{size:10}},grid:{display:false}}}}});
+  const years=aggregate(arr,'por_anio_afil'), yk=Object.keys(years).sort((a,b)=>Number(a)-Number(b)); CHARTS.anio=new Chart($('chartAnio'),{type:'line',data:{labels:yk,datasets:[{data:yk.map(y=>years[y]),borderColor:'#586fb4',backgroundColor:'rgba(88,111,180,.12)',fill:true,tension:.28,pointRadius:2.5,pointBackgroundColor:'#586fb4'}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw)}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{font:{size:10},callback:v=>fmt(v)},grid:{color:'#edf0f6'}}}}});
 }
 function llenarDistritos(){
   const vals=[...new Set(DATA.map(x=>x.distrito).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
