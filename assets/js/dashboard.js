@@ -1,95 +1,39 @@
-// Dashboard de Afiliados — USPP Satipo
-let DATA = [], MANIFEST = {}, MAPA = null, MARCADORES = new Map(), CHARTS = {};
-const $ = id => document.getElementById(id);
-const fmt = n => new Intl.NumberFormat('es-PE').format(Number(n) || 0);
-const pct = (n,t) => t ? (Number(n)*100/Number(t)) : 0;
-const esc = s => String(s ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-
-const PALETTE = ['#586fb4','#55b7df','#a8cb3b','#f5a444','#dc3388','#7d63bb','#6dbd8a','#9aa5b9','#ef7b72','#8a76c4'];
-const AGE_LABELS = {'1.NIÑO':'0 a 11 años','2.ADOLESCENTE':'12 a 17 años','3.JOVEN':'18 a 29 años','4.ADULTO':'30 a 59 años','5.ADULTO MAYOR':'60 a más'};
-Chart.defaults.font.family = 'IBM Plex Sans, Arial, sans-serif';
-Chart.defaults.font.size = 11;
-Chart.defaults.devicePixelRatio = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-
-function agregarCapaBaseConRespaldo(mapa){
-  const principal=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19});
-  principal.addTo(mapa);
+let DATA=[],MANIFEST={},MAPA=null,MARCADORES=new Map(),CHARTS={};
+const $=id=>document.getElementById(id);
+const fmt=n=>new Intl.NumberFormat('es-PE').format(Number(n)||0);
+const pct=(n,t)=>t?Number(n)*100/Number(t):0;
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const COLORS={blue:'#5794cf',pink:'#ce3157',orange:'#efa62c',green:'#76b82a',navy:'#273444',purple:'#7967b3'};
+const PALETTE=[COLORS.blue,COLORS.pink,COLORS.orange,COLORS.green,COLORS.purple,'#8aa0b8'];
+const AGE_LABELS={'1.NIÑO':'0 a 11 años','2.ADOLESCENTE':'12 a 17 años','3.JOVEN':'18 a 29 años','4.ADULTO':'30 a 59 años','5.ADULTO MAYOR':'60 a más'};
+const AGE_ICONS=[
+`<svg viewBox="0 0 48 48"><circle cx="24" cy="9" r="6"/><circle cx="24" cy="27" r="10"/><path d="M15 26h18v13H15z"/><path d="M18 37h-3v9h5v-7h8v7h5v-9h-3V28H18z"/></svg>`,
+`<svg viewBox="0 0 48 48"><circle cx="24" cy="8" r="6"/><path d="M16 17h16l4 13-7 2v12h-6V32l-7-2 4-13z"/><path d="M17 21 9 30l4 3 7-8M31 21l8 9-4 3-7-8"/></svg>`,
+`<svg viewBox="0 0 48 48"><circle cx="24" cy="8" r="6"/><path d="M17 16h14l5 13-7 2v13h-6V31l-7-2 5-13z"/><path d="M17 21 8 29l3 4 10-7M31 21l9 8-3 4-10-7"/></svg>`,
+`<svg viewBox="0 0 48 48"><circle cx="24" cy="8" r="6"/><path d="M16 16h16l5 14-7 2v12h-6V32l-8-2 5-14z"/><path d="M17 20 7 29l3 4 11-8M31 20l10 9-3 4-11-8"/></svg>`,
+`<svg viewBox="0 0 48 48"><circle cx="24" cy="8" r="6"/><path d="M17 16h14l5 13-6 3v11h-6V32l-8-3 5-13z"/><path d="M16 22 8 30l3 3 9-6M32 22l8 8-3 3-9-6"/><path d="M29 10h8" stroke="currentColor" stroke-width="2" fill="none"/></svg>`
+];
+Chart.defaults.font.family='Arial,Helvetica,sans-serif';Chart.defaults.font.size=10;Chart.defaults.color='#5d6878';Chart.defaults.devicePixelRatio=Math.max(2,Math.min(3,window.devicePixelRatio||1));
+function aggregate(arr,key){const o={};arr.forEach(x=>Object.entries(x[key]||{}).forEach(([k,v])=>o[k]=(o[k]||0)+Number(v||0)));return o}
+function destroy(){Object.values(CHARTS).forEach(c=>c?.destroy());CHARTS={}}
+function filtered(){const d=$('filtroDistrito').value;return d==='Todos'?DATA:DATA.filter(x=>x.distrito===d)}
+function short(s,n=28){s=String(s||'').replace(/\s*\(.*?\)/g,'').replace(/AFILIACION MASIVA DE OFICIO/i,'AFILIACIÓN MASIVA').replace(/AFILIACION PPDD/i,'AFILIACIÓN PPDD').replace(/ESCOLARES QALI WARMA.*/i,'ESCOLARES QALI WARMA').replace(/NIÑOS ENTRE 0 A 5 AÑOS.*/i,'NIÑOS 0–5 AÑOS').replace(/BENEFICIARIOS DE REPARACIONES EN SALUD/i,'REPARACIONES EN SALUD').replace(/PERSONAS INTERNAS INPE.*/i,'PERSONAS INTERNAS INPE').replace(/VULNERABILIDAD SANITARIA.*/i,'DISCAPACIDAD SEVERA').replace(/\s+/g,' ').trim();return s.length>n?s.slice(0,n-1)+'…':s}
+function opts(indexAxis='y'){return{responsive:true,maintainAspectRatio:false,animation:false,resizeDelay:80,indexAxis,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} (${pct(c.raw,filtered().reduce((s,x)=>s+Number(x.total_afiliados||0),0)).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:9},callback:v=>fmt(v)},grid:{color:'#e9eef4'}},y:{ticks:{font:{size:9}},grid:{display:false}}}}}
+function renderAgeIcons(age,total){const keys=Object.keys(AGE_LABELS);$('ageIcons').innerHTML=keys.map((k,i)=>`<div class="age-item">${AGE_ICONS[i]}<div>${AGE_LABELS[k]}</div><div class="age-pct">${fmt(age[k]||0)} · ${pct(age[k]||0,total).toFixed(1)}%</div></div>`).join('')}
+function render(){
+ const arr=filtered(),total=arr.reduce((s,x)=>s+Number(x.total_afiliados||0),0);$('kpiTotal').textContent=fmt(total);$('totalSub').textContent=$('filtroDistrito').value==='Todos'?'Red de Salud Satipo':'Distrito de '+$('filtroDistrito').value;
+ const sx=aggregate(arr,'sexo');$('sexF').textContent=`${fmt(sx.Femenino||0)} (${pct(sx.Femenino,total).toFixed(1)}%)`;$('sexM').textContent=`${fmt(sx.Masculino||0)} (${pct(sx.Masculino,total).toFixed(1)}%)`;
+ const age=aggregate(arr,'grupo_etareo');renderAgeIcons(age,total);destroy();
+ CHARTS.sexo=new Chart($('chartSexo'),{type:'doughnut',data:{labels:['Femenino','Masculino'],datasets:[{data:[sx.Femenino||0,sx.Masculino||0],backgroundColor:[COLORS.pink,COLORS.blue],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,animation:false,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}}}});
+ const plans=aggregate(arr,'plan_beneficio');let pe=Object.entries(plans).sort((a,b)=>b[1]-a[1]);if(!pe.length){pe=[['Sin datos',0]]};CHARTS.plan=new Chart($('chartPlan'),{type:'bar',data:{labels:pe.slice(0,5).map(([k])=>short(k,25)),datasets:[{data:pe.slice(0,5).map(([,v])=>v),backgroundColor:[COLORS.blue,COLORS.pink,COLORS.orange,COLORS.green,COLORS.purple],borderRadius:4,barThickness:17}]},options:opts('y')});
+ const keys=Object.keys(AGE_LABELS);CHARTS.edad=new Chart($('chartEdad'),{type:'bar',data:{labels:keys.map(k=>AGE_LABELS[k]),datasets:[{data:keys.map(k=>age[k]||0),backgroundColor:[COLORS.blue,COLORS.blue,COLORS.green,COLORS.orange,COLORS.pink],borderRadius:3,barThickness:19}]},options:opts('y')});
+ const dist={};arr.forEach(x=>dist[x.distrito]=(dist[x.distrito]||0)+Number(x.total_afiliados||0));let de=Object.entries(dist).sort((a,b)=>b[1]-a[1]).slice(0,8);CHARTS.dist=new Chart($('chartDistrito'),{type:'bar',data:{labels:de.map(([k])=>short(k,18)),datasets:[{data:de.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:4,barThickness:18}]},options:opts('y')});
+ const pop=aggregate(arr,'grupo_poblacional');let po=Object.entries(pop).sort((a,b)=>b[1]-a[1]).slice(0,6);CHARTS.pop=new Chart($('chartPoblacion'),{type:'bar',data:{labels:po.map(([k])=>short(k,23)),datasets:[{data:po.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:4,barThickness:17}]},options:opts('y')});
 }
-function iconoPara(item){
-  let color='#4a90cc';
-  if(item.es_punto_digitacion) color='#f5a444';
-  else if(item.total_afiliados>3000) color='#dc3388';
-  const size=item.es_punto_digitacion?19:Math.max(9,Math.min(25,8+Math.sqrt(item.total_afiliados)/6));
-  const cls=item.es_punto_digitacion?'marker-punto':'marker-normal';
-  return L.divIcon({className:'',html:`<div class="${cls}" style="width:${size}px;height:${size}px;background:${color}"></div>`,iconSize:[size,size],iconAnchor:[size/2,size/2]});
-}
-function destruirCharts(){Object.values(CHARTS).forEach(c=>c?.destroy());CHARTS={};}
-function datosFiltrados(){
-  const d=$('filtroDistrito').value;
-  return d==='Todos'?DATA:DATA.filter(x=>x.distrito===d);
-}
-function aggregate(arr,key){
-  const out={}; arr.forEach(x=>Object.entries(x[key]||{}).forEach(([k,v])=>out[k]=(out[k]||0)+Number(v||0))); return out;
-}
-function ordenarObjeto(obj,descending=true){
-  return Object.entries(obj).sort((a,b)=>descending?b[1]-a[1]:a[0].localeCompare(b[0],'es')).reduce((o,[k,v])=>(o[k]=v,o),{});
-}
-function chartBase(type,id,labels,data,extra={}){
-  const ctx=$(id); if(!ctx)return null;
-  return new Chart(ctx,{type,data:{labels,datasets:[{data,...extra}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)} (${pct(c.raw,data.reduce((a,b)=>a+Number(b||0),0)).toFixed(1)}%)`}}},...extra.options}});
-}
-function renderDashboard(){
-  const arr=datosFiltrados(), total=arr.reduce((s,x)=>s+Number(x.total_afiliados||0),0);
-  $('kpiTotal').textContent=fmt(total); $('totalSub').textContent=$('filtroDistrito').value==='Todos'?'Provincia de Satipo':'Distrito de '+$('filtroDistrito').value;
-  const sx=aggregate(arr,'sexo'); $('sexF').textContent=`${fmt(sx.Femenino||0)} (${pct(sx.Femenino,total).toFixed(1)}%)`; $('sexM').textContent=`${fmt(sx.Masculino||0)} (${pct(sx.Masculino,total).toFixed(1)}%)`;
-  destruirCharts();
-  CHARTS.sexo=new Chart($('chartSexo'),{type:'doughnut',data:{labels:['Mujer','Hombre'],datasets:[{data:[sx.Femenino||0,sx.Masculino||0],backgroundColor:['#dc3388','#586fb4'],borderWidth:0}]},options:{cutout:'58%',plugins:{legend:{position:'bottom',labels:{font:{size:9},boxWidth:8,padding:8}},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}}}});
-
-  const clasif={};
-  arr.forEach(x=>{const k=(x.clasificacion||'Sin clasificar').trim(); clasif[k]=(clasif[k]||0)+Number(x.total_afiliados||0)});
-  const ce=Object.entries(clasif).sort((a,b)=>b[1]-a[1]);
-  const clasifLabels=ce.map(([k])=>k.replace(/CENTRO DE SALUD/gi,'C.S.').replace(/PUESTO DE SALUD/gi,'P.S.').replace(/HOSPITAL DE APOYO/gi,'Hospital').slice(0,24));
-  CHARTS.clasif=new Chart($('chartClasificacion'),{type:'bar',data:{labels:clasifLabels,datasets:[{data:ce.map(([,v])=>v),backgroundColor:['#586fb4','#55b7df','#a8cb3b','#f5a444','#dc3388'],borderRadius:4,barThickness:18}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:10},callback:v=>fmt(v)},grid:{color:'#edf0f6'}},y:{ticks:{font:{size:10}},grid:{display:false}}}}});
-
-  const age=aggregate(arr,'grupo_etareo'), ageKeys=Object.keys(AGE_LABELS); CHARTS.edad=new Chart($('chartEdad'),{type:'bar',data:{labels:ageKeys.map(k=>AGE_LABELS[k]),datasets:[{data:ageKeys.map(k=>age[k]||0),backgroundColor:PALETTE,borderRadius:3}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:10},callback:v=>fmt(v)},grid:{color:'#edf0f6'}},y:{ticks:{font:{size:10}},grid:{display:false}}}}});
-
-  const popObj=ordenarObjeto(aggregate(arr,'grupo_poblacional')); const popEntries=Object.entries(popObj); const topPop=popEntries.slice(0,7), otherPop=popEntries.slice(7).reduce((s,[,v])=>s+v,0); if(otherPop)topPop.push(['Otros',otherPop]);
-  const abreviarPop=k=>k.replace(/\s*\(.*?\)/g,'').replace('AFILIACION PPDD','AFILIACIÓN PPDD').replace('AFILIACION MASIVA DE OFICIO','AFILIACIÓN MASIVA DE OFICIO').replace('ESCOLARES QALI WARMA','ESCOLARES QALI WARMA').replace('NIÑOS ENTRE 0 A 5 AÑOS','NIÑOS 0–5 AÑOS').replace('BENEFICIARIOS DE REPARACIONES EN SALUD','REPARACIONES EN SALUD').replace('PERSONAS INTERNAS INPE','PERSONAS INTERNAS INPE').replace('VULNERABILIDAD SANITARIA - DISCAPACIDAD SEVERA','DISCAPACIDAD SEVERA').replace(/\s+/g,' ').trim();
-  const popLabels=topPop.map(([k])=>abreviarPop(k)); const popVals=topPop.map(([,v])=>v);
-  CHARTS.pop=new Chart($('chartPoblacion'),{type:'bar',data:{labels:popLabels,datasets:[{data:popVals,backgroundColor:PALETTE,borderRadius:4,barThickness:21}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{title:c=>topPop[c[0].dataIndex]?.[0]||c[0].label,label:c=>`${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:10},callback:v=>fmt(v)},grid:{color:'#edf0f6'}},y:{ticks:{font:{size:10}},grid:{display:false}}}}});
-  const dist={}; arr.forEach(x=>dist[x.distrito]=(dist[x.distrito]||0)+Number(x.total_afiliados||0)); const distObj=ordenarObjeto(dist); const de=Object.entries(distObj); const dl=de.map(([k])=>k), dv=de.map(([,v])=>v);
-  CHARTS.dist=new Chart($('chartDistrito'),{type:'bar',data:{labels:dl,datasets:[{data:dv,backgroundColor:PALETTE,borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:10},callback:v=>fmt(v)},grid:{color:'#edf0f6'}},y:{ticks:{font:{size:10}},grid:{display:false}}}}});
-  const years=aggregate(arr,'por_anio_afil'), yk=Object.keys(years).sort((a,b)=>Number(a)-Number(b)); CHARTS.anio=new Chart($('chartAnio'),{type:'line',data:{labels:yk,datasets:[{data:yk.map(y=>years[y]),borderColor:'#586fb4',backgroundColor:'rgba(88,111,180,.12)',fill:true,tension:.28,pointRadius:2.5,pointBackgroundColor:'#586fb4'}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw)}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{font:{size:10},callback:v=>fmt(v)},grid:{color:'#edf0f6'}}}}});
-}
-function llenarDistritos(){
-  const vals=[...new Set(DATA.map(x=>x.distrito).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
-  vals.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;$('filtroDistrito').appendChild(o)});
-}
-function renderDetalle(item){
-  const btn=item.tiene_export?`<a href="exports/${encodeURIComponent(item.archivo_export)}" download>⬇ Excel</a>`:'';
-  $('detalle').className='side-detail'; $('detalle').innerHTML=`<div class="side-name">${esc(item.nombre)}</div><div class="side-meta">${esc(item.distrito)} · ${esc(item.clasificacion)}${item.categoria?' · '+esc(item.categoria):''}</div><div class="side-total">${fmt(item.total_afiliados)} <span style="font-size:10px;font-family:var(--f);font-weight:500;color:var(--muted)">afiliados</span></div><div class="side-actions">${btn}<button onclick="cerrarDetalle()">Cerrar</button></div>`;
-}
-function cerrarDetalle(){$('detalle').className='side-detail empty';$('detalle').textContent='Selecciona un establecimiento en el mapa para ver el detalle.'}
-window.cerrarDetalle=cerrarDetalle;
-function construirMapa(){
-  MAPA=L.map('mapa',{scrollWheelZoom:true}); agregarCapaBaseConRespaldo(MAPA);
-  if(!DATA.length){MAPA.setView([-11.37,-74.36],9);return}
-  MAPA.fitBounds(L.latLngBounds(DATA.map(x=>[x.lat,x.lng])),{padding:[22,22]});
-  DATA.forEach(item=>{
-    if(item.lat==null||item.lng==null)return;
-    const m=L.marker([item.lat,item.lng],{icon:iconoPara(item)}).addTo(MAPA);
-    m.bindPopup(`<div class="popup-name">${esc(item.nombre)}</div><div>${esc(item.distrito)}</div><div class="popup-total">${fmt(item.total_afiliados)}</div><div>afiliados</div>`);
-    m.on('click',()=>renderDetalle(item)); MARCADORES.set(String(item.codigo_renaes),m);
-  });
-}
-async function init(){
-  try{
-    const [rd,rm]=await Promise.all([fetch('data/resumen_establecimientos.json?ts='+Date.now()),fetch('data/manifest.json?ts='+Date.now())]);
-    DATA=await rd.json(); MANIFEST=await rm.json();
-    const corte=(MANIFEST.generado||'').slice(0,10); if(corte){const [y,m,d]=corte.split('-');$('opCorte').textContent=`${d}/${m}/${y}`;$('corteNota').textContent=`Información al ${d}/${m}/${y}`;}
-    llenarDistritos(); construirMapa(); renderDashboard();
-    $('filtroDistrito').addEventListener('change',renderDashboard);
-    $('limpiarFiltros').addEventListener('click',()=>{$('filtroDistrito').value='Todos';renderDashboard();cerrarDetalle();});
-  }catch(err){console.error(err);$('kpiTotal').textContent='Error';$('corteNota').textContent='No se pudo cargar la base consolidada.';}
-}
+function icono(item){let c=COLORS.blue;if(item.es_punto_digitacion)c=COLORS.orange;else if(Number(item.total_afiliados)>3000)c=COLORS.pink;const s=item.es_punto_digitacion?18:Math.max(9,Math.min(24,8+Math.sqrt(Number(item.total_afiliados)||0)/6));return L.divIcon({className:'',html:`<div style="width:${s}px;height:${s}px;border-radius:50%;background:${c};border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.35)"></div>`,iconSize:[s,s],iconAnchor:[s/2,s/2]})}
+function detalle(item){const dl=item.tiene_export?`<a href="exports/${encodeURIComponent(item.archivo_export)}" download>⬇ Excel</a>`:'';$('detalle').className='detail';$('detalle').innerHTML=`<div class="dname">${esc(item.nombre)}</div><div class="dmeta">${esc(item.distrito)} · ${esc(item.clasificacion)}${item.categoria?' · '+esc(item.categoria):''}</div><div class="dtotal">${fmt(item.total_afiliados)} <small>afiliados</small></div><div class="actions">${dl}<button onclick="cerrarDetalle()">Cerrar</button></div>`}
+function cerrarDetalle(){$('detalle').className='detail empty';$('detalle').textContent='Selecciona un establecimiento en el mapa para ver el detalle y descargar su padrón.'}window.cerrarDetalle=cerrarDetalle;
+function mapa(){MAPA=L.map('mapa',{scrollWheelZoom:true,zoomControl:true});L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(MAPA);const valid=DATA.filter(x=>x.lat!=null&&x.lng!=null);if(valid.length)MAPA.fitBounds(L.latLngBounds(valid.map(x=>[x.lat,x.lng])),{padding:[18,18]});else MAPA.setView([-11.37,-74.36],9);valid.forEach(item=>{const m=L.marker([item.lat,item.lng],{icon:icono(item)}).addTo(MAPA);m.bindPopup(`<div class="popup-name">${esc(item.nombre)}</div><div>${esc(item.distrito)}</div><div class="popup-total">${fmt(item.total_afiliados)}</div><div>afiliados</div>`);m.on('click',()=>detalle(item));MARCADORES.set(String(item.codigo_renaes),m)})}
+function fill(){[...new Set(DATA.map(x=>x.distrito).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es')).forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;$('filtroDistrito').appendChild(o)})}
+async function init(){try{const [a,b]=await Promise.all([fetch('data/resumen_establecimientos.json?ts='+Date.now()),fetch('data/manifest.json?ts='+Date.now())]);DATA=await a.json();MANIFEST=await b.json();const corte=(MANIFEST.generado||'').slice(0,10);if(corte){const [y,m,d]=corte.split('-');$('opCorte').textContent=`${d}/${m}/${y}`;$('corteNota').textContent=`Información al ${d}/${m}/${y}`}fill();mapa();render();$('filtroDistrito').addEventListener('change',render);$('limpiarFiltros').addEventListener('click',()=>{$('filtroDistrito').value='Todos';render();cerrarDetalle()});window.addEventListener('resize',()=>Object.values(CHARTS).forEach(c=>c.resize()));}catch(e){console.error(e);$('kpiTotal').textContent='Error';$('corteNota').textContent='No se pudo cargar la base consolidada.'}}
 init();
