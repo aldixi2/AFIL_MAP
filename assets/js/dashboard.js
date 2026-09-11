@@ -1,4 +1,4 @@
-let DATA=[],MANIFEST={},MAPA=null,MARCADORES=new Map(),CHARTS={};
+let DATA=[],MANIFEST={},MAPA=null,MARCADORES=new Map(),CHARTS={},SELECTED_CODE='Todos';
 const $=id=>document.getElementById(id);
 const fmt=n=>new Intl.NumberFormat('es-PE').format(Number(n)||0);
 const pct=(n,t)=>t?Number(n)*100/Number(t):0;
@@ -14,26 +14,95 @@ const AGE_ICONS=[
 `<svg viewBox="0 0 48 48"><circle cx="24" cy="8" r="6"/><path d="M17 16h14l5 13-6 3v11h-6V32l-8-3 5-13z"/><path d="M16 22 8 30l3 3 9-6M32 22l8 8-3 3-9-6"/><path d="M29 10h8" stroke="currentColor" stroke-width="2" fill="none"/></svg>`
 ];
 Chart.defaults.font.family='Arial,Helvetica,sans-serif';Chart.defaults.font.size=10;Chart.defaults.color='#5d6878';Chart.defaults.devicePixelRatio=Math.max(2,Math.min(3,window.devicePixelRatio||1));
+const ageLabelsPlugin={id:'ageLabelsPlugin',afterDatasetsDraw(chart){const {ctx}=chart;chart.data.datasets.forEach((ds,i)=>{const meta=chart.getDatasetMeta(i);const el=meta.data[0];if(!el)return;const p=el.getProps(['x','y','base','height'],true);const left=Math.min(p.x,p.base),right=Math.max(p.x,p.base),w=Math.abs(p.x-p.base);if(w<42)return;const val=Number(ds.data[0]||0),total=currentTotal();const cx=left+w/2;ctx.save();ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='700 10px Arial';ctx.fillText(ds.label,cx,p.y-2);ctx.font='700 11px Arial';ctx.fillText(fmt(val),cx,p.y+11);ctx.font='700 9px Arial';ctx.fillText(pct(val,total).toFixed(1)+'%',cx,p.y+23);ctx.restore();});}};
 function aggregate(arr,key){const o={};arr.forEach(x=>Object.entries(x[key]||{}).forEach(([k,v])=>o[k]=(o[k]||0)+Number(v||0)));return o}
 function destroy(){Object.values(CHARTS).forEach(c=>c?.destroy());CHARTS={}}
-function filtered(){const d=$('filtroDistrito').value;return d==='Todos'?DATA:DATA.filter(x=>x.distrito===d)}
-function short(s,n=28){s=String(s||'').replace(/\s*\(.*?\)/g,'').replace(/AFILIACION MASIVA DE OFICIO/i,'AFILIACIÓN MASIVA').replace(/AFILIACION PPDD/i,'AFILIACIÓN PPDD').replace(/ESCOLARES QALI WARMA.*/i,'ESCOLARES QALI WARMA').replace(/NIÑOS ENTRE 0 A 5 AÑOS.*/i,'NIÑOS 0–5 AÑOS').replace(/BENEFICIARIOS DE REPARACIONES EN SALUD/i,'REPARACIONES EN SALUD').replace(/PERSONAS INTERNAS INPE.*/i,'PERSONAS INTERNAS INPE').replace(/VULNERABILIDAD SANITARIA.*/i,'DISCAPACIDAD SEVERA').replace(/\s+/g,' ').trim();return s.length>n?s.slice(0,n-1)+'…':s}
-function opts(indexAxis='y'){return{responsive:true,maintainAspectRatio:false,animation:false,resizeDelay:80,indexAxis,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} (${pct(c.raw,filtered().reduce((s,x)=>s+Number(x.total_afiliados||0),0)).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:9},callback:v=>fmt(v)},grid:{color:'#e9eef4'}},y:{ticks:{font:{size:9}},grid:{display:false}}}}}
-function renderAgeIcons(age,total){const keys=Object.keys(AGE_LABELS);$('ageIcons').innerHTML=keys.map((k,i)=>`<div class="age-item">${AGE_ICONS[i]}<div>${AGE_LABELS[k]}</div><div class="age-pct">${fmt(age[k]||0)} · ${pct(age[k]||0,total).toFixed(1)}%</div></div>`).join('')}
-function render(){
- const arr=filtered(),total=arr.reduce((s,x)=>s+Number(x.total_afiliados||0),0);$('kpiTotal').textContent=fmt(total);$('totalSub').textContent=$('filtroDistrito').value==='Todos'?'Red de Salud Satipo':'Distrito de '+$('filtroDistrito').value;
- const sx=aggregate(arr,'sexo');$('sexF').textContent=`${fmt(sx.Femenino||0)} (${pct(sx.Femenino,total).toFixed(1)}%)`;$('sexM').textContent=`${fmt(sx.Masculino||0)} (${pct(sx.Masculino,total).toFixed(1)}%)`;
- const age=aggregate(arr,'grupo_etareo');renderAgeIcons(age,total);destroy();
- CHARTS.sexo=new Chart($('chartSexo'),{type:'doughnut',data:{labels:['Femenino','Masculino'],datasets:[{data:[sx.Femenino||0,sx.Masculino||0],backgroundColor:[COLORS.pink,COLORS.blue],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,animation:false,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}}}});
- const plans=aggregate(arr,'plan_beneficio');let pe=Object.entries(plans).sort((a,b)=>b[1]-a[1]);if(!pe.length){pe=[['Sin datos',0]]};CHARTS.plan=new Chart($('chartPlan'),{type:'bar',data:{labels:pe.slice(0,5).map(([k])=>short(k,25)),datasets:[{data:pe.slice(0,5).map(([,v])=>v),backgroundColor:[COLORS.blue,COLORS.pink,COLORS.orange,COLORS.green,COLORS.purple],borderRadius:4,barThickness:17}]},options:opts('y')});
- const keys=Object.keys(AGE_LABELS);CHARTS.edad=new Chart($('chartEdad'),{type:'bar',data:{labels:keys.map(k=>AGE_LABELS[k]),datasets:[{data:keys.map(k=>age[k]||0),backgroundColor:[COLORS.blue,COLORS.blue,COLORS.green,COLORS.orange,COLORS.pink],borderRadius:3,barThickness:19}]},options:opts('y')});
- const dist={};arr.forEach(x=>dist[x.distrito]=(dist[x.distrito]||0)+Number(x.total_afiliados||0));let de=Object.entries(dist).sort((a,b)=>b[1]-a[1]).slice(0,8);CHARTS.dist=new Chart($('chartDistrito'),{type:'bar',data:{labels:de.map(([k])=>short(k,18)),datasets:[{data:de.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:4,barThickness:18}]},options:opts('y')});
- const pop=aggregate(arr,'grupo_poblacional');let po=Object.entries(pop).sort((a,b)=>b[1]-a[1]).slice(0,6);CHARTS.pop=new Chart($('chartPoblacion'),{type:'bar',data:{labels:po.map(([k])=>short(k,23)),datasets:[{data:po.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:4,barThickness:17}]},options:opts('y')});
+function filtered(){
+  const d=$('filtroDistrito').value;
+  const e=$('filtroEstablecimiento').value;
+  return DATA.filter(x=>(d==='Todos'||x.distrito===d)&&(e==='Todos'||String(x.codigo_renaes)===String(e)));
 }
-function icono(item){let c=COLORS.blue;if(item.es_punto_digitacion)c=COLORS.orange;else if(Number(item.total_afiliados)>3000)c=COLORS.pink;const s=item.es_punto_digitacion?18:Math.max(9,Math.min(24,8+Math.sqrt(Number(item.total_afiliados)||0)/6));return L.divIcon({className:'',html:`<div style="width:${s}px;height:${s}px;border-radius:50%;background:${c};border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.35)"></div>`,iconSize:[s,s],iconAnchor:[s/2,s/2]})}
+function short(s,n=28){s=String(s||'').replace(/\s*\(.*?\)/g,'').replace(/AFILIACION MASIVA DE OFICIO/i,'AFILIACIÓN MASIVA').replace(/AFILIACION PPDD/i,'AFILIACIÓN PPDD').replace(/ESCOLARES QALI WARMA.*/i,'ESCOLARES QALI WARMA').replace(/NIÑOS ENTRE 0 A 5 AÑOS.*/i,'NIÑOS 0–5 AÑOS').replace(/BENEFICIARIOS DE REPARACIONES EN SALUD/i,'REPARACIONES EN SALUD').replace(/PERSONAS INTERNAS INPE.*/i,'PERSONAS INTERNAS INPE').replace(/VULNERABILIDAD SANITARIA.*/i,'DISCAPACIDAD SEVERA').replace(/\s+/g,' ').trim();return s.length>n?s.slice(0,n-1)+'…':s}
+function chartOpts(indexAxis='y'){
+ return {responsive:true,maintainAspectRatio:false,animation:false,devicePixelRatio:2,indexAxis,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} (${pct(c.raw,currentTotal()).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:9},callback:v=>fmt(v)},grid:{color:'#e7edf4'}},y:{ticks:{font:{size:9}},grid:{display:false}}}};
+}
+function currentTotal(){return filtered().reduce((s,x)=>s+Number(x.total_afiliados||0),0)}
+function renderAgeIcons(age,total){
+ const keys=Object.keys(AGE_LABELS);
+ $('ageIcons').innerHTML=keys.map((k,i)=>`<div class="age-item">${AGE_ICONS[i]}<div class="age-label">${AGE_LABELS[k]}</div><div class="age-pct">${fmt(age[k]||0)} · ${pct(age[k]||0,total).toFixed(1)}%</div></div>`).join('');
+}
+function ageChart(age,total){
+ const keys=Object.keys(AGE_LABELS);
+ const vals=keys.map(k=>Number(age[k]||0));
+ CHARTS.edad=new Chart($('chartEdad'),{
+  type:'bar',data:{labels:['Afiliados'],datasets:keys.map((k,i)=>({label:AGE_LABELS[k],data:[vals[i]],backgroundColor:[COLORS.blue,'#52b9df',COLORS.green,COLORS.orange,COLORS.pink][i],borderColor:'#fff',borderWidth:1,barThickness:74}))},
+  options:{responsive:true,maintainAspectRatio:false,animation:false,devicePixelRatio:2,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{stacked:true,display:false,max:total},y:{stacked:true,display:false}}},plugins:[ageLabelsPlugin]
+ });
+}
+function render(){
+ const arr=filtered(),total=arr.reduce((s,x)=>s+Number(x.total_afiliados||0),0);
+ $('kpiTotal').textContent=fmt(total);
+ const d=$('filtroDistrito').value,e=$('filtroEstablecimiento').value;
+ $('totalSub').textContent=e!=='Todos'?esc(DATA.find(x=>String(x.codigo_renaes)===String(e))?.nombre||'Establecimiento seleccionado'):(d==='Todos'?'Red de Salud Satipo':'Distrito de '+d);
+ $('corteNota').textContent=`Información al ${$('opCorte').textContent}`;
+ const sx=aggregate(arr,'sexo');
+ $('sexF').textContent=`${fmt(sx.Femenino||0)} (${pct(sx.Femenino,total).toFixed(1)}%)`;
+ $('sexM').textContent=`${fmt(sx.Masculino||0)} (${pct(sx.Masculino,total).toFixed(1)}%)`;
+ const age=aggregate(arr,'grupo_etareo');renderAgeIcons(age,total);destroy();
+ CHARTS.sexo=new Chart($('chartSexo'),{type:'doughnut',data:{labels:['Femenino','Masculino'],datasets:[{data:[sx.Femenino||0,sx.Masculino||0],backgroundColor:[COLORS.pink,COLORS.blue],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,animation:false,devicePixelRatio:2,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}}}});
+ // Gráfico compacto adicional: afiliados por clasificación del establecimiento.
+ const clas={};arr.forEach(x=>{const k=x.clasificacion||'Sin clasificar';clas[k]=(clas[k]||0)+Number(x.total_afiliados||0)});
+ let ce=Object.entries(clas).sort((a,b)=>b[1]-a[1]);
+ CHARTS.clas=new Chart($('chartClasificacion'),{type:'bar',data:{labels:ce.map(([k])=>short(k,22)),datasets:[{data:ce.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:5,barThickness:22}]},options:chartOpts('y')});
+ ageChart(age,total);
+ const dist={};arr.forEach(x=>dist[x.distrito]=(dist[x.distrito]||0)+Number(x.total_afiliados||0));let de=Object.entries(dist).sort((a,b)=>b[1]-a[1]).slice(0,8);
+ CHARTS.dist=new Chart($('chartDistrito'),{type:'bar',data:{labels:de.map(([k])=>short(k,18)),datasets:[{data:de.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:4,barThickness:18}]},options:chartOpts('y')});
+ const pop=aggregate(arr,'grupo_poblacional');let po=Object.entries(pop).sort((a,b)=>b[1]-a[1]).slice(0,6);
+ CHARTS.pop=new Chart($('chartPoblacion'),{type:'bar',data:{labels:po.map(([k])=>short(k,23)),datasets:[{data:po.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:4,barThickness:17}]},options:chartOpts('y')});
+ updateMarkerSelection();
+}
+function icono(item){let c=COLORS.blue;if(item.es_punto_digitacion)c=COLORS.orange;else if(Number(item.total_afiliados)>3000)c=COLORS.pink;const s=item.es_punto_digitacion?18:Math.max(9,Math.min(24,8+Math.sqrt(Number(item.total_afiliados)||0)/6));return L.divIcon({className:'',html:`<div class="map-dot" style="width:${s}px;height:${s}px;background:${c}"></div>`,iconSize:[s,s],iconAnchor:[s/2,s/2]})}
 function detalle(item){const dl=item.tiene_export?`<a href="exports/${encodeURIComponent(item.archivo_export)}" download>⬇ Excel</a>`:'';$('detalle').className='detail';$('detalle').innerHTML=`<div class="dname">${esc(item.nombre)}</div><div class="dmeta">${esc(item.distrito)} · ${esc(item.clasificacion)}${item.categoria?' · '+esc(item.categoria):''}</div><div class="dtotal">${fmt(item.total_afiliados)} <small>afiliados</small></div><div class="actions">${dl}<button onclick="cerrarDetalle()">Cerrar</button></div>`}
-function cerrarDetalle(){$('detalle').className='detail empty';$('detalle').textContent='Selecciona un establecimiento en el mapa para ver el detalle y descargar su padrón.'}window.cerrarDetalle=cerrarDetalle;
-function mapa(){MAPA=L.map('mapa',{scrollWheelZoom:true,zoomControl:true});L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(MAPA);const valid=DATA.filter(x=>x.lat!=null&&x.lng!=null);if(valid.length)MAPA.fitBounds(L.latLngBounds(valid.map(x=>[x.lat,x.lng])),{padding:[18,18]});else MAPA.setView([-11.37,-74.36],9);valid.forEach(item=>{const m=L.marker([item.lat,item.lng],{icon:icono(item)}).addTo(MAPA);m.bindPopup(`<div class="popup-name">${esc(item.nombre)}</div><div>${esc(item.distrito)}</div><div class="popup-total">${fmt(item.total_afiliados)}</div><div>afiliados</div>`);m.on('click',()=>detalle(item));MARCADORES.set(String(item.codigo_renaes),m)})}
-function fill(){[...new Set(DATA.map(x=>x.distrito).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es')).forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;$('filtroDistrito').appendChild(o)})}
-async function init(){try{const [a,b]=await Promise.all([fetch('data/resumen_establecimientos.json?ts='+Date.now()),fetch('data/manifest.json?ts='+Date.now())]);DATA=await a.json();MANIFEST=await b.json();const corte=(MANIFEST.generado||'').slice(0,10);if(corte){const [y,m,d]=corte.split('-');$('opCorte').textContent=`${d}/${m}/${y}`;$('corteNota').textContent=`Información al ${d}/${m}/${y}`}fill();mapa();render();$('filtroDistrito').addEventListener('change',render);$('limpiarFiltros').addEventListener('click',()=>{$('filtroDistrito').value='Todos';render();cerrarDetalle()});window.addEventListener('resize',()=>Object.values(CHARTS).forEach(c=>c.resize()));}catch(e){console.error(e);$('kpiTotal').textContent='Error';$('corteNota').textContent='No se pudo cargar la base consolidada.'}}
+function cerrarDetalle(){SELECTED_CODE='Todos';$('filtroEstablecimiento').value='Todos';$('detalle').className='detail empty';$('detalle').textContent='Selecciona un establecimiento en el mapa para ver el detalle y descargar su padrón.';updateMarkerSelection();renderWithoutMapLoop()}window.cerrarDetalle=cerrarDetalle;
+function renderWithoutMapLoop(){const old=window.__skipMarkerUpdate;window.__skipMarkerUpdate=true;render();window.__skipMarkerUpdate=old}
+function selectEstablecimiento(code){
+ SELECTED_CODE=String(code);
+ const item=DATA.find(x=>String(x.codigo_renaes)===String(code));
+ if(!item)return;
+ $('filtroDistrito').value=item.distrito||'Todos';fillEstablecimientos(item.distrito||'Todos',String(code));
+ $('filtroEstablecimiento').value=String(code);
+ detalle(item);render();
+}
+function updateMarkerSelection(){
+ if(window.__skipMarkerUpdate)return;
+ MARCADORES.forEach((m,code)=>{const selected=String(code)===String(SELECTED_CODE);const item=DATA.find(x=>String(x.codigo_renaes)===String(code));if(item)m.setIcon(selected?iconoSeleccionado(item):icono(item));});
+}
+function iconoSeleccionado(item){const base=icono(item);const el=L.divIcon({className:'',html:`<div class="map-dot selected"></div>`,iconSize:[24,24],iconAnchor:[12,12]});return el}
+function mapa(){
+ MAPA=L.map('mapa',{scrollWheelZoom:true,zoomControl:true});L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(MAPA);
+ const valid=DATA.filter(x=>x.lat!=null&&x.lng!=null);if(valid.length)MAPA.fitBounds(L.latLngBounds(valid.map(x=>[x.lat,x.lng])),{padding:[18,18]});else MAPA.setView([-11.37,-74.36],9);
+ valid.forEach(item=>{const m=L.marker([item.lat,item.lng],{icon:icono(item)}).addTo(MAPA);m.bindPopup(`<div class="popup-name">${esc(item.nombre)}</div><div>${esc(item.distrito)}</div><div class="popup-total">${fmt(item.total_afiliados)}</div><div>afiliados</div>`);m.on('click',()=>selectEstablecimiento(item.codigo_renaes));MARCADORES.set(String(item.codigo_renaes),m)})
+}
+function fill(){
+ const sel=$('filtroDistrito'),current=sel.value;sel.innerHTML='<option value="Todos">Todos</option>';
+ [...new Set(DATA.map(x=>x.distrito).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es')).forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o)});
+ sel.value=[...sel.options].some(o=>o.value===current)?current:'Todos';fillEstablecimientos(sel.value,$('filtroEstablecimiento')?.value||'Todos');
+}
+function fillEstablecimientos(distrito='Todos',keep='Todos'){
+ const sel=$('filtroEstablecimiento');if(!sel)return;const old=keep||sel.value;sel.innerHTML='<option value="Todos">Todos los establecimientos</option>';
+ DATA.filter(x=>distrito==='Todos'||x.distrito===distrito).sort((a,b)=>String(a.nombre).localeCompare(String(b.nombre),'es')).forEach(x=>{const o=document.createElement('option');o.value=x.codigo_renaes;o.textContent=x.nombre;sel.appendChild(o)});
+ sel.value=[...sel.options].some(o=>String(o.value)===String(old))?old:'Todos';
+}
+async function init(){
+ try{
+  const [a,b]=await Promise.all([fetch('data/resumen_establecimientos.json?ts='+Date.now()),fetch('data/manifest.json?ts='+Date.now())]);DATA=await a.json();MANIFEST=await b.json();
+  const corte=(MANIFEST.generado||'').slice(0,10);if(corte){const [y,m,d]=corte.split('-');$('opCorte').textContent=`${d}/${m}/${y}`;$('corteNota').textContent=`Información al ${d}/${m}/${y}`}
+  fill();mapa();render();
+  $('filtroDistrito').addEventListener('change',()=>{fillEstablecimientos($('filtroDistrito').value,'Todos');SELECTED_CODE='Todos';cerrarDetalleSinRender();render()});
+  $('filtroEstablecimiento').addEventListener('change',()=>{const code=$('filtroEstablecimiento').value;SELECTED_CODE=code;const item=DATA.find(x=>String(x.codigo_renaes)===String(code));if(item)detalle(item);else cerrarDetalleSinRender();render()});
+  $('limpiarFiltros').addEventListener('click',()=>{$('filtroDistrito').value='Todos';fillEstablecimientos('Todos','Todos');SELECTED_CODE='Todos';cerrarDetalleSinRender();render()});
+  window.addEventListener('resize',()=>Object.values(CHARTS).forEach(c=>c.resize()));
+ }catch(e){console.error(e);$('kpiTotal').textContent='Error';$('corteNota').textContent='No se pudo cargar la base consolidada.'}
+}
+function cerrarDetalleSinRender(){$('detalle').className='detail empty';$('detalle').textContent='Selecciona un establecimiento en el mapa para ver el detalle y descargar su padrón.'}
 init();
