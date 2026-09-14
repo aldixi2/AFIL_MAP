@@ -7,11 +7,11 @@ const COLORS={blue:'#5794cf',pink:'#ce3157',orange:'#efa62c',green:'#76b82a',nav
 const PALETTE=[COLORS.blue,COLORS.pink,COLORS.orange,COLORS.green,COLORS.purple,'#8aa0b8'];
 const AGE_LABELS={'1.NIÑO':'0 a 11 años','2.ADOLESCENTE':'12 a 17 años','3.JOVEN':'18 a 29 años','4.ADULTO':'30 a 59 años','5.ADULTO MAYOR':'60 a más'};
 const AGE_ICONS=[
-`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="11" r="7"/><path d="M24 21c-5 2-8 7-8 13v9h7v14h6V42h6v15h6V43h7v-9c0-6-3-11-8-13l-5 8-5-8z"/><path d="M27 23l5 8 5-8" fill="none" stroke="currentColor" stroke-width="3"/></svg>`,
-`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="10" r="7"/><path d="M22 20h20l7 18-8 3v16h-7V43h-4v14h-7V41l-8-3 7-18z"/><path d="M18 24l-9 12 5 4 10-9M46 24l9 12-5 4-10-9" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>`,
-`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="10" r="7"/><path d="M21 20h22l7 20-9 3v15h-7V43h-4v15h-7V43l-9-3 7-20z"/><path d="M19 25L7 36l5 5 12-9M45 25l12 11-5 5-12-9" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>`,
-`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="9" r="8"/><path d="M20 20h24l8 22-10 3v13h-8V45h-4v13h-8V45L12 42l8-22z"/><path d="M19 25L5 38l5 6 15-11M45 25l14 13-5 6-15-11" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>`,
-`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="31" cy="9" r="8"/><path d="M19 21h24l8 20-9 5v12h-8V46h-4v12h-8V46l-10-5 7-20z"/><path d="M18 27L6 39l5 6 14-10M45 27l13 12-5 6-14-10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M46 9h10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`
+`<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="age-svg-fill" cx="32" cy="13" r="7"/><path class="age-svg-fill" d="M21 27c2-5 7-8 11-8s9 3 11 8l3 11-6 2v13H24V40l-6-2 3-11z"/><path class="age-svg-stroke" d="M20 39l-6 7M44 39l6 7M25 52l-3 7M39 52l3 7"/></svg>`,
+`<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="age-svg-fill" cx="32" cy="10" r="7"/><path class="age-svg-fill" d="M23 21h18l6 17-7 3v14H24V41l-7-3 6-17z"/><path class="age-svg-stroke" d="M22 26l-10 11M42 26l10 11M27 55l-2 5M37 55l2 5"/></svg>`,
+`<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="age-svg-fill" cx="32" cy="9" r="7"/><path class="age-svg-fill" d="M22 20h20l7 21-9 3v14h-7V44h-2v14h-7V44l-9-3 7-21z"/><path class="age-svg-stroke" d="M20 26L7 37M44 26l13 11M27 58h-7M37 58h7"/></svg>`,
+`<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="age-svg-fill" cx="32" cy="9" r="8"/><path class="age-svg-fill" d="M20 21h24l8 22-10 3v12h-8V46h-4v12h-8V46L12 43l8-22z"/><path class="age-svg-stroke" d="M19 27L5 39M45 27l14 12M25 58h-8M39 58h8"/></svg>`,
+`<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="age-svg-fill" cx="30" cy="9" r="8"/><path class="age-svg-fill" d="M18 21h23l9 21-9 5v12h-8V47h-5v12h-8V47l-9-5 7-21z"/><path class="age-svg-stroke" d="M18 27L7 40M43 28l11 12M43 10h11M48 14l5 5"/></svg>`
 ];
 Chart.defaults.font.family='Arial,Helvetica,sans-serif';Chart.defaults.font.size=10;Chart.defaults.color='#5d6878';Chart.defaults.devicePixelRatio=Math.max(2,Math.min(3,window.devicePixelRatio||1));
 const ageLabelsPlugin={id:'ageLabelsPlugin',afterDatasetsDraw(chart){const {ctx}=chart;chart.data.datasets.forEach((ds,i)=>{const meta=chart.getDatasetMeta(i);const el=meta.data[0];if(!el)return;const p=el.getProps(['x','y','base','height'],true);const left=Math.min(p.x,p.base),right=Math.max(p.x,p.base),w=Math.abs(p.x-p.base);if(w<42)return;const val=Number(ds.data[0]||0),total=currentTotal();const cx=left+w/2;ctx.save();ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='700 10px Arial';ctx.fillText(ds.label,cx,p.y-2);ctx.font='700 11px Arial';ctx.fillText(fmt(val),cx,p.y+11);ctx.font='700 9px Arial';ctx.fillText(pct(val,total).toFixed(1)+'%',cx,p.y+23);ctx.restore();});}};
@@ -44,15 +44,10 @@ function normalizeClasificacion(k){
 function renderAgeIcons(age,total){
  const keys=Object.keys(AGE_LABELS);
  $('ageIcons').innerHTML=keys.map((k,i)=>`<div class="age-item">${AGE_ICONS[i]}<div class="age-label">${AGE_LABELS[k]}</div><div class="age-pct">${fmt(age[k]||0)} · ${pct(age[k]||0,total).toFixed(1)}%</div></div>`).join('');
+ $('ageBar').innerHTML=keys.map((k,i)=>{const v=Number(age[k]||0),p=pct(v,total);return `<div class="age-segment" style="flex:${Math.max(v,1)}" data-age="${k}" title="${AGE_LABELS[k]}: ${fmt(v)} afiliados (${p.toFixed(1)}%)"><div class="inside"><b>${AGE_LABELS[k]}</b><strong>${fmt(v)}</strong><small>${p.toFixed(1)}%</small></div></div>`}).join('');
+ $('ageBar').querySelectorAll('.age-segment').forEach(el=>el.addEventListener('click',()=>{ $('ageBar').querySelectorAll('.age-segment').forEach(x=>x.style.outline=''); el.style.outline='3px solid rgba(39,52,68,.28)'; }));
 }
-function ageChart(age,total){
- const keys=Object.keys(AGE_LABELS);
- const vals=keys.map(k=>Number(age[k]||0));
- CHARTS.edad=new Chart($('chartEdad'),{
-  type:'bar',data:{labels:['Afiliados'],datasets:keys.map((k,i)=>({label:AGE_LABELS[k],data:[vals[i]],backgroundColor:[COLORS.blue,'#52b9df',COLORS.green,COLORS.orange,COLORS.pink][i],borderColor:'#fff',borderWidth:1,barThickness:74}))},
-  options:{responsive:true,maintainAspectRatio:false,animation:{duration:650,easing:'easeOutQuart'},devicePixelRatio:2,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{stacked:true,display:false,max:total},y:{stacked:true,display:false}}},plugins:[ageLabelsPlugin]
- });
-}
+function ageChart(){ return null; }
 function animateNumber(el,target){
  const start=Number(el.dataset.value||0), duration=550, t0=performance.now(); el.dataset.value=target;
  function step(t){const p=Math.min(1,(t-t0)/duration),e=1-Math.pow(1-p,3);el.textContent=fmt(Math.round(start+(target-start)*e));if(p<1)requestAnimationFrame(step)}
@@ -70,11 +65,6 @@ function render(){
  $('barF').style.width=`${pct(sx.Femenino||0,total).toFixed(1)}%`; $('barM').style.width=`${pct(sx.Masculino||0,total).toFixed(1)}%`;
  const age=aggregate(arr,'grupo_etareo');renderAgeIcons(age,total);destroy();
  CHARTS.sexo=new Chart($('chartSexo'),{type:'doughnut',data:{labels:['Femenino','Masculino'],datasets:[{data:[sx.Femenino||0,sx.Masculino||0],backgroundColor:[COLORS.pink,COLORS.blue],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,animation:false,devicePixelRatio:2,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}}}});
- // Gráfico compacto adicional: afiliados por clasificación del establecimiento.
- const clas={};arr.forEach(x=>{const k=normalizeClasificacion(x.clasificacion);clas[k]=(clas[k]||0)+Number(x.total_afiliados||0)});
- const classOrder=['Hospital','Centro de Salud con camas','Centro de Salud','Puesto de Salud','Otros'];
- let ce=classOrder.filter(k=>clas[k]>0).map(k=>[k,clas[k]]).sort((a,b)=>b[1]-a[1]);
- CHARTS.clas=new Chart($('chartClasificacion'),{type:'bar',data:{labels:ce.map(([k])=>k),datasets:[{data:ce.map(([,v])=>v),backgroundColor:[COLORS.pink,COLORS.orange,COLORS.blue,COLORS.green,COLORS.purple],borderRadius:8,barThickness:24}]},options:{...chartOpts('y'),plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} afiliados (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:8},callback:v=>fmt(v)},grid:{color:'#e7edf4'}},y:{ticks:{font:{size:8,weight:'700'}},grid:{display:false}}}},plugins:[valueLabelsPlugin]});
  ageChart(age,total);
  const dist={};arr.forEach(x=>dist[x.distrito]=(dist[x.distrito]||0)+Number(x.total_afiliados||0));let de=Object.entries(dist).sort((a,b)=>b[1]-a[1]).slice(0,8);
  CHARTS.dist=new Chart($('chartDistrito'),{type:'bar',data:{labels:de.map(([k])=>short(k,18)),datasets:[{data:de.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:6,barThickness:18}]},options:{...chartOpts('y'),onClick:(evt,els)=>{if(els.length){const d=de[els[0].index]?.[0];if(d){$('filtroDistrito').value=d;fillEstablecimientos(d,'Todos');SELECTED_CODE='Todos';cerrarDetalleSinRender();render()}}}},plugins:[valueLabelsPlugin]});
