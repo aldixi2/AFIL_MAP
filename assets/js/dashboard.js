@@ -7,11 +7,11 @@ const COLORS={blue:'#5794cf',pink:'#ce3157',orange:'#efa62c',green:'#76b82a',nav
 const PALETTE=[COLORS.blue,COLORS.pink,COLORS.orange,COLORS.green,COLORS.purple,'#8aa0b8'];
 const AGE_LABELS={'1.NIÑO':'0 a 11 años','2.ADOLESCENTE':'12 a 17 años','3.JOVEN':'18 a 29 años','4.ADULTO':'30 a 59 años','5.ADULTO MAYOR':'60 a más'};
 const AGE_ICONS=[
-`<svg viewBox="0 0 48 48"><circle cx="24" cy="9" r="6"/><circle cx="24" cy="27" r="10"/><path d="M15 26h18v13H15z"/><path d="M18 37h-3v9h5v-7h8v7h5v-9h-3V28H18z"/></svg>`,
-`<svg viewBox="0 0 48 48"><circle cx="24" cy="8" r="6"/><path d="M16 17h16l4 13-7 2v12h-6V32l-7-2 4-13z"/><path d="M17 21 9 30l4 3 7-8M31 21l8 9-4 3-7-8"/></svg>`,
-`<svg viewBox="0 0 48 48"><circle cx="24" cy="8" r="6"/><path d="M17 16h14l5 13-7 2v13h-6V31l-7-2 5-13z"/><path d="M17 21 8 29l3 4 10-7M31 21l9 8-3 4-10-7"/></svg>`,
-`<svg viewBox="0 0 48 48"><circle cx="24" cy="8" r="6"/><path d="M16 16h16l5 14-7 2v12h-6V32l-8-2 5-14z"/><path d="M17 20 7 29l3 4 11-8M31 20l10 9-3 4-11-8"/></svg>`,
-`<svg viewBox="0 0 48 48"><circle cx="24" cy="8" r="6"/><path d="M17 16h14l5 13-6 3v11h-6V32l-8-3 5-13z"/><path d="M16 22 8 30l3 3 9-6M32 22l8 8-3 3-9-6"/><path d="M29 10h8" stroke="currentColor" stroke-width="2" fill="none"/></svg>`
+`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="11" r="7"/><path d="M24 21c-5 2-8 7-8 13v9h7v14h6V42h6v15h6V43h7v-9c0-6-3-11-8-13l-5 8-5-8z"/><path d="M27 23l5 8 5-8" fill="none" stroke="currentColor" stroke-width="3"/></svg>`,
+`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="10" r="7"/><path d="M22 20h20l7 18-8 3v16h-7V43h-4v14h-7V41l-8-3 7-18z"/><path d="M18 24l-9 12 5 4 10-9M46 24l9 12-5 4-10-9" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>`,
+`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="10" r="7"/><path d="M21 20h22l7 20-9 3v15h-7V43h-4v15h-7V43l-9-3 7-20z"/><path d="M19 25L7 36l5 5 12-9M45 25l12 11-5 5-12-9" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>`,
+`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="9" r="8"/><path d="M20 20h24l8 22-10 3v13h-8V45h-4v13h-8V45L12 42l8-22z"/><path d="M19 25L5 38l5 6 15-11M45 25l14 13-5 6-15-11" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>`,
+`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="31" cy="9" r="8"/><path d="M19 21h24l8 20-9 5v12h-8V46h-4v12h-8V46l-10-5 7-20z"/><path d="M18 27L6 39l5 6 14-10M45 27l13 12-5 6-14-10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M46 9h10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`
 ];
 Chart.defaults.font.family='Arial,Helvetica,sans-serif';Chart.defaults.font.size=10;Chart.defaults.color='#5d6878';Chart.defaults.devicePixelRatio=Math.max(2,Math.min(3,window.devicePixelRatio||1));
 const ageLabelsPlugin={id:'ageLabelsPlugin',afterDatasetsDraw(chart){const {ctx}=chart;chart.data.datasets.forEach((ds,i)=>{const meta=chart.getDatasetMeta(i);const el=meta.data[0];if(!el)return;const p=el.getProps(['x','y','base','height'],true);const left=Math.min(p.x,p.base),right=Math.max(p.x,p.base),w=Math.abs(p.x-p.base);if(w<42)return;const val=Number(ds.data[0]||0),total=currentTotal();const cx=left+w/2;ctx.save();ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='700 10px Arial';ctx.fillText(ds.label,cx,p.y-2);ctx.font='700 11px Arial';ctx.fillText(fmt(val),cx,p.y+11);ctx.font='700 9px Arial';ctx.fillText(pct(val,total).toFixed(1)+'%',cx,p.y+23);ctx.restore();});}};
@@ -23,10 +23,24 @@ function filtered(){
   return DATA.filter(x=>(d==='Todos'||x.distrito===d)&&(e==='Todos'||String(x.codigo_renaes)===String(e)));
 }
 function short(s,n=28){s=String(s||'').replace(/\s*\(.*?\)/g,'').replace(/AFILIACION MASIVA DE OFICIO/i,'AFILIACIÓN MASIVA').replace(/AFILIACION PPDD/i,'AFILIACIÓN PPDD').replace(/ESCOLARES QALI WARMA.*/i,'ESCOLARES QALI WARMA').replace(/NIÑOS ENTRE 0 A 5 AÑOS.*/i,'NIÑOS 0–5 AÑOS').replace(/BENEFICIARIOS DE REPARACIONES EN SALUD/i,'REPARACIONES EN SALUD').replace(/PERSONAS INTERNAS INPE.*/i,'PERSONAS INTERNAS INPE').replace(/VULNERABILIDAD SANITARIA.*/i,'DISCAPACIDAD SEVERA').replace(/\s+/g,' ').trim();return s.length>n?s.slice(0,n-1)+'…':s}
+const valueLabelsPlugin={id:'valueLabelsPlugin',afterDatasetsDraw(chart){
+ const {ctx}=chart; const ds=chart.data.datasets[0]; if(!ds)return; const meta=chart.getDatasetMeta(0);
+ ctx.save();ctx.font='700 8px Arial';ctx.fillStyle='#52657f';ctx.textBaseline='middle';
+ meta.data.forEach((el,i)=>{const v=Number(ds.data[i]||0); if(!v)return; const p=el.getProps(['x','y'],true); ctx.textAlign='left';ctx.fillText(fmt(v),p.x+5,p.y);});ctx.restore();
+}};
 function chartOpts(indexAxis='y'){
  return {responsive:true,maintainAspectRatio:false,animation:false,devicePixelRatio:2,indexAxis,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} (${pct(c.raw,currentTotal()).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:9},callback:v=>fmt(v)},grid:{color:'#e7edf4'}},y:{ticks:{font:{size:9}},grid:{display:false}}}};
 }
 function currentTotal(){return filtered().reduce((s,x)=>s+Number(x.total_afiliados||0),0)}
+function normalizeClasificacion(k){
+ k=String(k||'').toLowerCase();
+ if(k.includes('hospital')) return 'Hospital';
+ if(k.includes('centro de salud') && k.includes('camas')) return 'Centro de Salud con camas';
+ if(k.includes('centro de salud')) return 'Centro de Salud';
+ if(k.includes('puesto de salud')) return 'Puesto de Salud';
+ return 'Otros';
+}
+
 function renderAgeIcons(age,total){
  const keys=Object.keys(AGE_LABELS);
  $('ageIcons').innerHTML=keys.map((k,i)=>`<div class="age-item">${AGE_ICONS[i]}<div class="age-label">${AGE_LABELS[k]}</div><div class="age-pct">${fmt(age[k]||0)} · ${pct(age[k]||0,total).toFixed(1)}%</div></div>`).join('');
@@ -36,29 +50,36 @@ function ageChart(age,total){
  const vals=keys.map(k=>Number(age[k]||0));
  CHARTS.edad=new Chart($('chartEdad'),{
   type:'bar',data:{labels:['Afiliados'],datasets:keys.map((k,i)=>({label:AGE_LABELS[k],data:[vals[i]],backgroundColor:[COLORS.blue,'#52b9df',COLORS.green,COLORS.orange,COLORS.pink][i],borderColor:'#fff',borderWidth:1,barThickness:74}))},
-  options:{responsive:true,maintainAspectRatio:false,animation:false,devicePixelRatio:2,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{stacked:true,display:false,max:total},y:{stacked:true,display:false}}},plugins:[ageLabelsPlugin]
+  options:{responsive:true,maintainAspectRatio:false,animation:{duration:650,easing:'easeOutQuart'},devicePixelRatio:2,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{stacked:true,display:false,max:total},y:{stacked:true,display:false}}},plugins:[ageLabelsPlugin]
  });
+}
+function animateNumber(el,target){
+ const start=Number(el.dataset.value||0), duration=550, t0=performance.now(); el.dataset.value=target;
+ function step(t){const p=Math.min(1,(t-t0)/duration),e=1-Math.pow(1-p,3);el.textContent=fmt(Math.round(start+(target-start)*e));if(p<1)requestAnimationFrame(step)}
+ requestAnimationFrame(step);
 }
 function render(){
  const arr=filtered(),total=arr.reduce((s,x)=>s+Number(x.total_afiliados||0),0);
- $('kpiTotal').textContent=fmt(total);
+ animateNumber($('kpiTotal'), total);
  const d=$('filtroDistrito').value,e=$('filtroEstablecimiento').value;
  $('totalSub').textContent=e!=='Todos'?esc(DATA.find(x=>String(x.codigo_renaes)===String(e))?.nombre||'Establecimiento seleccionado'):(d==='Todos'?'Red de Salud Satipo':'Distrito de '+d);
  $('corteNota').textContent=`Información al ${$('opCorte').textContent}`;
  const sx=aggregate(arr,'sexo');
  $('sexF').textContent=`${fmt(sx.Femenino||0)} (${pct(sx.Femenino,total).toFixed(1)}%)`;
  $('sexM').textContent=`${fmt(sx.Masculino||0)} (${pct(sx.Masculino,total).toFixed(1)}%)`;
+ $('barF').style.width=`${pct(sx.Femenino||0,total).toFixed(1)}%`; $('barM').style.width=`${pct(sx.Masculino||0,total).toFixed(1)}%`;
  const age=aggregate(arr,'grupo_etareo');renderAgeIcons(age,total);destroy();
  CHARTS.sexo=new Chart($('chartSexo'),{type:'doughnut',data:{labels:['Femenino','Masculino'],datasets:[{data:[sx.Femenino||0,sx.Masculino||0],backgroundColor:[COLORS.pink,COLORS.blue],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,animation:false,devicePixelRatio:2,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)} (${pct(c.raw,total).toFixed(1)}%)`}}}}});
  // Gráfico compacto adicional: afiliados por clasificación del establecimiento.
- const clas={};arr.forEach(x=>{const k=x.clasificacion||'Sin clasificar';clas[k]=(clas[k]||0)+Number(x.total_afiliados||0)});
- let ce=Object.entries(clas).sort((a,b)=>b[1]-a[1]);
- CHARTS.clas=new Chart($('chartClasificacion'),{type:'bar',data:{labels:ce.map(([k])=>short(k,22)),datasets:[{data:ce.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:5,barThickness:22}]},options:chartOpts('y')});
+ const clas={};arr.forEach(x=>{const k=normalizeClasificacion(x.clasificacion);clas[k]=(clas[k]||0)+Number(x.total_afiliados||0)});
+ const classOrder=['Hospital','Centro de Salud con camas','Centro de Salud','Puesto de Salud','Otros'];
+ let ce=classOrder.filter(k=>clas[k]>0).map(k=>[k,clas[k]]).sort((a,b)=>b[1]-a[1]);
+ CHARTS.clas=new Chart($('chartClasificacion'),{type:'bar',data:{labels:ce.map(([k])=>k),datasets:[{data:ce.map(([,v])=>v),backgroundColor:[COLORS.pink,COLORS.orange,COLORS.blue,COLORS.green,COLORS.purple],borderRadius:8,barThickness:24}]},options:{...chartOpts('y'),plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw)} afiliados (${pct(c.raw,total).toFixed(1)}%)`}}},scales:{x:{ticks:{font:{size:8},callback:v=>fmt(v)},grid:{color:'#e7edf4'}},y:{ticks:{font:{size:8,weight:'700'}},grid:{display:false}}}},plugins:[valueLabelsPlugin]});
  ageChart(age,total);
  const dist={};arr.forEach(x=>dist[x.distrito]=(dist[x.distrito]||0)+Number(x.total_afiliados||0));let de=Object.entries(dist).sort((a,b)=>b[1]-a[1]).slice(0,8);
- CHARTS.dist=new Chart($('chartDistrito'),{type:'bar',data:{labels:de.map(([k])=>short(k,18)),datasets:[{data:de.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:4,barThickness:18}]},options:chartOpts('y')});
+ CHARTS.dist=new Chart($('chartDistrito'),{type:'bar',data:{labels:de.map(([k])=>short(k,18)),datasets:[{data:de.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:6,barThickness:18}]},options:{...chartOpts('y'),onClick:(evt,els)=>{if(els.length){const d=de[els[0].index]?.[0];if(d){$('filtroDistrito').value=d;fillEstablecimientos(d,'Todos');SELECTED_CODE='Todos';cerrarDetalleSinRender();render()}}}},plugins:[valueLabelsPlugin]});
  const pop=aggregate(arr,'grupo_poblacional');let po=Object.entries(pop).sort((a,b)=>b[1]-a[1]).slice(0,6);
- CHARTS.pop=new Chart($('chartPoblacion'),{type:'bar',data:{labels:po.map(([k])=>short(k,23)),datasets:[{data:po.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:4,barThickness:17}]},options:chartOpts('y')});
+ CHARTS.pop=new Chart($('chartPoblacion'),{type:'bar',data:{labels:po.map(([k])=>short(k,23)),datasets:[{data:po.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:6,barThickness:17}]},options:chartOpts('y'),plugins:[valueLabelsPlugin]});
  updateMarkerSelection();
 }
 function icono(item){let c=COLORS.blue;if(item.es_punto_digitacion)c=COLORS.orange;else if(Number(item.total_afiliados)>3000)c=COLORS.pink;const s=item.es_punto_digitacion?18:Math.max(9,Math.min(24,8+Math.sqrt(Number(item.total_afiliados)||0)/6));return L.divIcon({className:'',html:`<div class="map-dot" style="width:${s}px;height:${s}px;background:${c}"></div>`,iconSize:[s,s],iconAnchor:[s/2,s/2]})}
@@ -81,7 +102,7 @@ function iconoSeleccionado(item){const base=icono(item);const el=L.divIcon({clas
 function mapa(){
  MAPA=L.map('mapa',{scrollWheelZoom:true,zoomControl:true});L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(MAPA);
  const valid=DATA.filter(x=>x.lat!=null&&x.lng!=null);if(valid.length)MAPA.fitBounds(L.latLngBounds(valid.map(x=>[x.lat,x.lng])),{padding:[18,18]});else MAPA.setView([-11.37,-74.36],9);
- valid.forEach(item=>{const m=L.marker([item.lat,item.lng],{icon:icono(item)}).addTo(MAPA);m.bindPopup(`<div class="popup-name">${esc(item.nombre)}</div><div>${esc(item.distrito)}</div><div class="popup-total">${fmt(item.total_afiliados)}</div><div>afiliados</div>`);m.on('click',()=>selectEstablecimiento(item.codigo_renaes));MARCADORES.set(String(item.codigo_renaes),m)})
+ valid.forEach(item=>{const m=L.marker([item.lat,item.lng],{icon:icono(item)}).addTo(MAPA);m.bindTooltip(`<b>${esc(item.nombre)}</b><br>${fmt(item.total_afiliados)} afiliados`,{direction:'top',offset:[0,-8],opacity:.95});m.bindPopup(`<div class="popup-name">${esc(item.nombre)}</div><div>${esc(item.distrito)} · ${esc(item.clasificacion)}</div><div class="popup-total">${fmt(item.total_afiliados)}</div><div>afiliados</div>`);m.on('click',()=>selectEstablecimiento(item.codigo_renaes));MARCADORES.set(String(item.codigo_renaes),m)})
 }
 function fill(){
  const sel=$('filtroDistrito'),current=sel.value;sel.innerHTML='<option value="Todos">Todos</option>';
