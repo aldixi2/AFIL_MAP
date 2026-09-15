@@ -7,11 +7,11 @@ const COLORS={blue:'#5794cf',pink:'#ce3157',orange:'#efa62c',green:'#76b82a',nav
 const PALETTE=[COLORS.blue,COLORS.pink,COLORS.orange,COLORS.green,COLORS.purple,'#8aa0b8'];
 const AGE_LABELS={'1.NIÑO':'0 a 11 años','2.ADOLESCENTE':'12 a 17 años','3.JOVEN':'18 a 29 años','4.ADULTO':'30 a 59 años','5.ADULTO MAYOR':'60 a más'};
 const AGE_ICONS=[
-`<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="age-svg-fill" cx="32" cy="13" r="7"/><path class="age-svg-fill" d="M21 27c2-5 7-8 11-8s9 3 11 8l3 11-6 2v13H24V40l-6-2 3-11z"/><path class="age-svg-stroke" d="M20 39l-6 7M44 39l6 7M25 52l-3 7M39 52l3 7"/></svg>`,
-`<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="age-svg-fill" cx="32" cy="10" r="7"/><path class="age-svg-fill" d="M23 21h18l6 17-7 3v14H24V41l-7-3 6-17z"/><path class="age-svg-stroke" d="M22 26l-10 11M42 26l10 11M27 55l-2 5M37 55l2 5"/></svg>`,
-`<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="age-svg-fill" cx="32" cy="9" r="7"/><path class="age-svg-fill" d="M22 20h20l7 21-9 3v14h-7V44h-2v14h-7V44l-9-3 7-21z"/><path class="age-svg-stroke" d="M20 26L7 37M44 26l13 11M27 58h-7M37 58h7"/></svg>`,
-`<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="age-svg-fill" cx="32" cy="9" r="8"/><path class="age-svg-fill" d="M20 21h24l8 22-10 3v12h-8V46h-4v12h-8V46L12 43l8-22z"/><path class="age-svg-stroke" d="M19 27L5 39M45 27l14 12M25 58h-8M39 58h8"/></svg>`,
-`<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="age-svg-fill" cx="30" cy="9" r="8"/><path class="age-svg-fill" d="M18 21h23l9 21-9 5v12h-8V47h-5v12h-8V47l-9-5 7-21z"/><path class="age-svg-stroke" d="M18 27L7 40M43 28l11 12M43 10h11M48 14l5 5"/></svg>`
+`<span class="age-emoji" role="img" aria-label="Bebé">👶</span>`,
+`<span class="age-emoji" role="img" aria-label="Niño">🧒</span>`,
+`<span class="age-emoji" role="img" aria-label="Persona joven">🧑</span>`,
+`<span class="age-emoji" role="img" aria-label="Adulto">👨</span>`,
+`<span class="age-emoji" role="img" aria-label="Adulto mayor">👴</span>`
 ];
 Chart.defaults.font.family='Arial,Helvetica,sans-serif';Chart.defaults.font.size=10;Chart.defaults.color='#5d6878';Chart.defaults.devicePixelRatio=Math.max(2,Math.min(3,window.devicePixelRatio||1));
 const ageLabelsPlugin={id:'ageLabelsPlugin',afterDatasetsDraw(chart){const {ctx}=chart;chart.data.datasets.forEach((ds,i)=>{const meta=chart.getDatasetMeta(i);const el=meta.data[0];if(!el)return;const p=el.getProps(['x','y','base','height'],true);const left=Math.min(p.x,p.base),right=Math.max(p.x,p.base),w=Math.abs(p.x-p.base);if(w<42)return;const val=Number(ds.data[0]||0),total=currentTotal();const cx=left+w/2;ctx.save();ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='700 10px Arial';ctx.fillText(ds.label,cx,p.y-2);ctx.font='700 11px Arial';ctx.fillText(fmt(val),cx,p.y+11);ctx.font='700 9px Arial';ctx.fillText(pct(val,total).toFixed(1)+'%',cx,p.y+23);ctx.restore();});}};
