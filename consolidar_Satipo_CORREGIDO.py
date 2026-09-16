@@ -113,6 +113,30 @@ def leer_afiliados_excel(path):
     df = wb.parse(wb.sheet_names[0])
     return df
 
+
+def convertir_fecha(valor):
+    """Convierte fechas provenientes de Excel o texto sin romper si pandas
+    ya las leyó como datetime.
+
+    Acepta: fechas datetime/Timestamp, seriales de Excel y fechas en texto.
+    Devuelve pandas.NaT cuando el valor no es una fecha válida.
+    """
+    if pd.isna(valor):
+        return pd.NaT
+
+    # Pandas/Excel ya entregó una fecha.
+    if isinstance(valor, (pd.Timestamp, datetime)):
+        return pd.Timestamp(valor)
+
+    # Excel puede entregar fechas como número serial (días desde 1899-12-30).
+    if isinstance(valor, (int, float)) and not isinstance(valor, bool):
+        return pd.to_datetime(
+            valor, unit='D', origin='1899-12-30', errors='coerce'
+        )
+
+    # Texto: dejamos que pandas detecte el formato.
+    return pd.to_datetime(valor, errors='coerce')
+
 # ==========================
 # MAIN
 # ==========================
@@ -232,12 +256,15 @@ def main():
             detalle_df['NRO_DNI'] = detalle_df['NRO_DNI'].apply(
                 lambda v: str(int(v)).zfill(8) if pd.notna(v) else "")
 
-        # Fechas: vienen como número serial de Excel (días desde 1899-12-30)
+        # Fechas: pueden venir como serial de Excel, datetime o texto.
+        # La función convertir_fecha detecta automáticamente el tipo.
         for col_fecha in ('FECHA_NAC', 'FECHA_AFIL'):
             if col_fecha in detalle_df.columns:
-                detalle_df[col_fecha] = pd.to_datetime(
-                    detalle_df[col_fecha], unit='D', origin='1899-12-30', errors='coerce'
-                ).dt.strftime('%d/%m/%Y')
+                detalle_df[col_fecha] = (
+                    detalle_df[col_fecha]
+                    .apply(convertir_fecha)
+                    .dt.strftime('%d/%m/%Y')
+                )
 
         detalle_df = detalle_df.sort_values(by=['APE_PATERNO','APE_MATERNO'], na_position='last')
         fname = f"{cod}_{slug(meta['nombre'])}.xlsx"
