@@ -58,27 +58,33 @@ function animateNumber(el,target){
 }
 function monthlyData(arr){
  const labels=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+ const src=(MANIFEST&&MANIFEST.por_mes_afil_2026)||null;
  const altas=Array(12).fill(0);
- arr.forEach(x=>{const m=x.por_mes_afil_2026||{};for(let i=1;i<=12;i++)altas[i-1]+=Number(m[String(i)]||0)});
+ if(src){ for(let i=1;i<=12;i++) altas[i-1]=Number(src[String(i)]||0); }
+ else { arr.forEach(x=>{const m=x.por_mes_afil_2026||{};for(let i=1;i<=12;i++)altas[i-1]+=Number(m[String(i)]||0)}); }
  const acumulado=[];let s=0;altas.forEach(v=>{s+=v;acumulado.push(s)});
  return {labels,altas,acumulado};
 }
 function renderMonthly(arr){
  const md=monthlyData(arr);
- const corteMonth=8;
+ const rawCut=(MANIFEST&&MANIFEST.generado||'').slice(0,10);
+ let corteMonth=8;
+ if(rawCut){const mm=parseInt(rawCut.slice(5,7),10);if(mm>=1&&mm<=12)corteMonth=mm;}
  const labels=md.labels.slice(0,corteMonth), altas=md.altas.slice(0,corteMonth), acum=md.acumulado.slice(0,corteMonth);
- const idx=Math.max(0,Math.min(corteMonth-1,new Date().getMonth()));
+ const idx=Math.max(0,labels.length-1);
  const totalMes=altas[idx]||0, totalAcum=acum[idx]||0;
  $('monthlyTotal').textContent=fmt(totalMes);$('monthlyAccum').textContent=fmt(totalAcum);
  const hasMonthly=altas.some(v=>v>0);
  $('chartMensual').style.display=hasMonthly?'block':'none';
- const holder=$('chartMensual').parentElement; let msg=holder.querySelector('.monthly-empty'); if(!hasMonthly){if(!msg){msg=document.createElement('div');msg.className='monthly-empty';holder.appendChild(msg)}msg.textContent='Los cortes mensuales se habilitan al ejecutar la consolidación con la columna mes_afil de la base SIS.'}else if(msg)msg.remove();
+ const holder=$('chartMensual').parentElement; let msg=holder.querySelector('.monthly-empty');
+ if(!hasMonthly){if(!msg){msg=document.createElement('div');msg.className='monthly-empty';holder.appendChild(msg)}msg.textContent='Ejecuta la consolidación para actualizar las afiliaciones registradas por mes.';}else if(msg)msg.remove();
  if(CHARTS.mensual)CHARTS.mensual.destroy();
  CHARTS.mensual=new Chart($('chartMensual'),{type:'line',data:{labels,datasets:[
-  {label:'Altas del mes',data:altas,borderColor:'#1881d4',backgroundColor:'rgba(24,129,212,.10)',fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2},
+  {label:'Afiliaciones del mes',data:altas,borderColor:'#1881d4',backgroundColor:'rgba(24,129,212,.10)',fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2},
   {label:'Acumulado 2026',data:acum,borderColor:'#76b82a',backgroundColor:'transparent',tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2}
- ]},options:{responsive:true,maintainAspectRatio:false,animation:false,devicePixelRatio:2,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{x:{ticks:{font:{size:8}} ,grid:{display:false}},y:{beginAtZero:true,ticks:{font:{size:8},callback:v=>fmt(v)},grid:{color:'#e7edf4'}}}}});
+ ]},options:{responsive:true,maintainAspectRatio:false,animation:false,devicePixelRatio:2,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'top',labels:{boxWidth:8,font:{size:8},padding:8}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{x:{ticks:{font:{size:8}},grid:{display:false}},y:{beginAtZero:true,ticks:{font:{size:8},callback:v=>fmt(v)},grid:{color:'#e7edf4'}}}}});
 }
+
 function render(){
  const arr=filtered(),total=arr.reduce((s,x)=>s+Number(x.total_afiliados||0),0);
  animateNumber($('kpiTotal'), total);
