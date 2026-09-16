@@ -155,7 +155,7 @@ def main():
     # ---- Agregación por establecimiento ----
     agregados = defaultdict(lambda: {
         "total": 0, "sexo": Counter(), "grupo_etareo": Counter(),
-        "grupo_poblacional": Counter(), "plan": Counter(), "por_anio_afil": Counter(),
+        "grupo_poblacional": Counter(), "plan": Counter(), "por_anio_afil": Counter(), "por_mes_afil_2026": Counter(),
         "detalle": []
     })
     sin_match = Counter()
@@ -171,6 +171,12 @@ def main():
         anio = row.get('año_afil')
         if pd.notna(anio):
             ag["por_anio_afil"][int(anio)] += 1
+        mes = row.get('mes_afil')
+        if pd.notna(anio) and pd.notna(mes) and int(float(anio)) == 2026:
+            try:
+                ag["por_mes_afil_2026"][int(float(mes))] += 1
+            except Exception:
+                pass
         ag["detalle"].append(row)
         if cod not in estabs:
             sin_match[row.get('NOMBRE_IPRESS')] += 1
@@ -191,6 +197,7 @@ def main():
             item["grupo_etareo"] = dict(ag["grupo_etareo"])
             item["grupo_poblacional"] = dict(ag["grupo_poblacional"].most_common(8))
             item["por_anio_afil"] = dict(sorted(ag["por_anio_afil"].items()))
+            item["por_mes_afil_2026"] = {str(k): int(v) for k,v in sorted(ag["por_mes_afil_2026"].items())}
             item["tiene_export"] = True
         else:
             item["total_afiliados"] = 0
@@ -198,6 +205,7 @@ def main():
             item["grupo_etareo"] = {}
             item["grupo_poblacional"] = {}
             item["por_anio_afil"] = {}
+            item["por_mes_afil_2026"] = {}
             item["tiene_export"] = False
         item["archivo_export"] = f"{cod}_{slug(meta['nombre'])}.xlsx" if ag else None
         resumen.append(item)

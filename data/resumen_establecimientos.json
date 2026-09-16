@@ -7,8 +7,8 @@
   "distrito": "Satipo",
   "direccion": "Calle Calle Daniel Alcides Carrion Nº 398 Distrito Satipo Provincia Satipo Departamento Junin",
   "microrred": null,
-  "lat": -11.248611,
-  "lng": -74.635772,
+  "lat": -11.24928,
+  "lng": -74.6386,
   "es_punto_digitacion": true,
   "etiqueta_punto": "Hospital Manuel Ángel Higa Arakaki",
   "total_afiliados": 25281,
@@ -51,6 +51,17 @@
    "2024": 1539,
    "2025": 1384,
    "2026": 843
+  },
+  "por_mes_afil_2026": {
+   "1": 97,
+   "2": 97,
+   "3": 89,
+   "4": 97,
+   "5": 86,
+   "6": 113,
+   "7": 123,
+   "8": 106,
+   "9": 35
   },
   "tiene_export": true,
   "archivo_export": "432_hospital-de-apoyo-manuel-higa-arakaki.xlsx"
@@ -108,6 +119,17 @@
    "2025": 415,
    "2026": 330
   },
+  "por_mes_afil_2026": {
+   "1": 25,
+   "2": 45,
+   "3": 34,
+   "4": 40,
+   "5": 45,
+   "6": 43,
+   "7": 41,
+   "8": 36,
+   "9": 21
+  },
   "tiene_export": true,
   "archivo_export": "434_mazamari.xlsx"
  },
@@ -164,6 +186,17 @@
    "2025": 429,
    "2026": 332
   },
+  "por_mes_afil_2026": {
+   "1": 29,
+   "2": 40,
+   "3": 36,
+   "4": 43,
+   "5": 43,
+   "6": 57,
+   "7": 38,
+   "8": 34,
+   "9": 12
+  },
   "tiene_export": true,
   "archivo_export": "495_rio-negro.xlsx"
  },
@@ -219,6 +252,17 @@
    "2025": 224,
    "2026": 148
   },
+  "por_mes_afil_2026": {
+   "1": 19,
+   "2": 9,
+   "3": 24,
+   "4": 19,
+   "5": 8,
+   "6": 21,
+   "7": 18,
+   "8": 21,
+   "9": 9
+  },
   "tiene_export": true,
   "archivo_export": "479_santo-domingo-de-marankiari.xlsx"
  },
@@ -273,6 +317,16 @@
    "2024": 195,
    "2025": 56,
    "2026": 62
+  },
+  "por_mes_afil_2026": {
+   "1": 5,
+   "2": 7,
+   "3": 7,
+   "4": 4,
+   "5": 5,
+   "6": 17,
+   "7": 9,
+   "8": 8
   },
   "tiene_export": true,
   "archivo_export": "462_poyeni.xlsx"
@@ -330,6 +384,17 @@
    "2025": 91,
    "2026": 61
   },
+  "por_mes_afil_2026": {
+   "1": 6,
+   "2": 9,
+   "3": 3,
+   "4": 6,
+   "5": 8,
+   "6": 11,
+   "7": 11,
+   "8": 5,
+   "9": 2
+  },
   "tiene_export": true,
   "archivo_export": "473_san-vicente-de-canaan.xlsx"
  },
@@ -386,6 +451,17 @@
    "2025": 132,
    "2026": 135
   },
+  "por_mes_afil_2026": {
+   "1": 6,
+   "2": 12,
+   "3": 19,
+   "4": 7,
+   "5": 16,
+   "6": 20,
+   "7": 31,
+   "8": 16,
+   "9": 8
+  },
   "tiene_export": true,
   "archivo_export": "469_puerto-ocopa.xlsx"
  },
@@ -440,6 +516,17 @@
    "2024": 102,
    "2025": 83,
    "2026": 90
+  },
+  "por_mes_afil_2026": {
+   "1": 3,
+   "2": 4,
+   "3": 10,
+   "4": 14,
+   "5": 10,
+   "6": 15,
+   "7": 15,
+   "8": 17,
+   "9": 2
   },
   "tiene_export": true,
   "archivo_export": "471_cutivireni.xlsx"
@@ -497,6 +584,17 @@
    "2025": 126,
    "2026": 113
   },
+  "por_mes_afil_2026": {
+   "1": 5,
+   "2": 12,
+   "3": 12,
+   "4": 15,
+   "5": 12,
+   "6": 15,
+   "7": 15,
+   "8": 22,
+   "9": 5
+  },
   "tiene_export": true,
   "archivo_export": "490_llaylla.xlsx"
  },
@@ -553,6 +651,17 @@
    "2025": 142,
    "2026": 114
   },
+  "por_mes_afil_2026": {
+   "1": 9,
+   "2": 11,
+   "3": 15,
+   "4": 17,
+   "5": 12,
+   "6": 16,
+   "7": 13,
+   "8": 14,
+   "9": 7
+  },
   "tiene_export": true,
   "archivo_export": "485_coviriali.xlsx"
  },
@@ -607,6 +716,17 @@
    "2024": 201,
    "2025": 220,
    "2026": 163
+  },
+  "por_mes_afil_2026": {
+   "1": 10,
+   "2": 16,
+   "3": 24,
+   "4": 23,
+   "5": 11,
+   "6": 25,
+   "7": 14,
+   "8": 29,
+   "9": 11
   },
   "tiene_export": true,
   "archivo_export": "500_aoti.xlsx"
@@ -663,6 +783,17 @@
    "2025": 123,
    "2026": 78
   },
+  "por_mes_afil_2026": {
+   "1": 7,
+   "2": 11,
+   "3": 10,
+   "4": 11,
+   "5": 11,
+   "6": 10,
+   "7": 9,
+   "8": 8,
+   "9": 1
+  },
   "tiene_export": true,
   "archivo_export": "439_san-cristobal.xlsx"
  },
@@ -717,6 +848,17 @@
    "2024": 62,
    "2025": 69,
    "2026": 58
+  },
+  "por_mes_afil_2026": {
+   "1": 8,
+   "2": 4,
+   "3": 9,
+   "4": 6,
+   "5": 9,
+   "6": 4,
+   "7": 5,
+   "8": 9,
+   "9": 4
   },
   "tiene_export": true,
   "archivo_export": "438_tziriari.xlsx"
@@ -773,6 +915,17 @@
    "2025": 164,
    "2026": 150
   },
+  "por_mes_afil_2026": {
+   "1": 20,
+   "2": 23,
+   "3": 19,
+   "4": 19,
+   "5": 15,
+   "6": 25,
+   "7": 9,
+   "8": 17,
+   "9": 3
+  },
   "tiene_export": true,
   "archivo_export": "6877_chontakiari.xlsx"
  },
@@ -828,6 +981,17 @@
    "2025": 69,
    "2026": 42
   },
+  "por_mes_afil_2026": {
+   "1": 3,
+   "2": 4,
+   "3": 7,
+   "4": 6,
+   "5": 6,
+   "6": 6,
+   "7": 4,
+   "8": 5,
+   "9": 1
+  },
   "tiene_export": true,
   "archivo_export": "506_union-capiri.xlsx"
  },
@@ -882,6 +1046,17 @@
    "2024": 60,
    "2025": 38,
    "2026": 30
+  },
+  "por_mes_afil_2026": {
+   "1": 3,
+   "2": 4,
+   "3": 6,
+   "4": 2,
+   "5": 2,
+   "6": 2,
+   "7": 2,
+   "8": 7,
+   "9": 2
   },
   "tiene_export": true,
   "archivo_export": "493_mariposa.xlsx"
@@ -939,6 +1114,17 @@
    "2025": 83,
    "2026": 57
   },
+  "por_mes_afil_2026": {
+   "1": 2,
+   "2": 8,
+   "3": 8,
+   "4": 5,
+   "5": 4,
+   "6": 9,
+   "7": 7,
+   "8": 7,
+   "9": 7
+  },
   "tiene_export": true,
   "archivo_export": "436_pueblo-libre-de-pauriali.xlsx"
  },
@@ -994,6 +1180,17 @@
    "2025": 81,
    "2026": 74
   },
+  "por_mes_afil_2026": {
+   "1": 6,
+   "2": 8,
+   "3": 11,
+   "4": 10,
+   "5": 13,
+   "6": 6,
+   "7": 10,
+   "8": 7,
+   "9": 3
+  },
   "tiene_export": true,
   "archivo_export": "435_capirushari.xlsx"
  },
@@ -1048,6 +1245,17 @@
    "2024": 108,
    "2025": 45,
    "2026": 86
+  },
+  "por_mes_afil_2026": {
+   "1": 2,
+   "2": 5,
+   "3": 2,
+   "4": 4,
+   "5": 17,
+   "6": 15,
+   "7": 22,
+   "8": 18,
+   "9": 1
   },
   "tiene_export": true,
   "archivo_export": "460_betania.xlsx"
@@ -1105,6 +1313,17 @@
    "2025": 186,
    "2026": 184
   },
+  "por_mes_afil_2026": {
+   "1": 18,
+   "2": 14,
+   "3": 40,
+   "4": 31,
+   "5": 14,
+   "6": 23,
+   "7": 19,
+   "8": 18,
+   "9": 7
+  },
   "tiene_export": true,
   "archivo_export": "478_rio-venado.xlsx"
  },
@@ -1161,6 +1380,17 @@
    "2025": 59,
    "2026": 66
   },
+  "por_mes_afil_2026": {
+   "1": 3,
+   "2": 8,
+   "3": 10,
+   "4": 13,
+   "5": 9,
+   "6": 8,
+   "7": 6,
+   "8": 4,
+   "9": 5
+  },
   "tiene_export": true,
   "archivo_export": "497_rio-chari-alto.xlsx"
  },
@@ -1215,6 +1445,17 @@
    "2024": 156,
    "2025": 106,
    "2026": 111
+  },
+  "por_mes_afil_2026": {
+   "1": 3,
+   "2": 7,
+   "3": 8,
+   "4": 9,
+   "5": 16,
+   "6": 31,
+   "7": 19,
+   "8": 16,
+   "9": 2
   },
   "tiene_export": true,
   "archivo_export": "513_quempiri.xlsx"
@@ -1271,6 +1512,17 @@
    "2025": 233,
    "2026": 200
   },
+  "por_mes_afil_2026": {
+   "1": 16,
+   "2": 26,
+   "3": 30,
+   "4": 29,
+   "5": 15,
+   "6": 21,
+   "7": 22,
+   "8": 28,
+   "9": 13
+  },
   "tiene_export": true,
   "archivo_export": "13864_canaan-del-norte.xlsx"
  },
@@ -1325,6 +1577,17 @@
    "2024": 72,
    "2025": 92,
    "2026": 47
+  },
+  "por_mes_afil_2026": {
+   "1": 4,
+   "2": 7,
+   "3": 6,
+   "4": 4,
+   "5": 4,
+   "6": 6,
+   "7": 6,
+   "8": 6,
+   "9": 4
   },
   "tiene_export": true,
   "archivo_export": "499_puente-ipoki.xlsx"
@@ -1382,6 +1645,17 @@
    "2025": 114,
    "2026": 86
   },
+  "por_mes_afil_2026": {
+   "1": 12,
+   "2": 5,
+   "3": 10,
+   "4": 14,
+   "5": 8,
+   "6": 18,
+   "7": 9,
+   "8": 5,
+   "9": 5
+  },
   "tiene_export": true,
   "archivo_export": "477_huahuari.xlsx"
  },
@@ -1435,6 +1709,17 @@
    "2024": 92,
    "2025": 86,
    "2026": 84
+  },
+  "por_mes_afil_2026": {
+   "1": 4,
+   "2": 8,
+   "3": 8,
+   "4": 4,
+   "5": 21,
+   "6": 10,
+   "7": 18,
+   "8": 8,
+   "9": 3
   },
   "tiene_export": true,
   "archivo_export": "437_panga.xlsx"
@@ -1491,6 +1776,17 @@
    "2025": 118,
    "2026": 111
   },
+  "por_mes_afil_2026": {
+   "1": 6,
+   "2": 9,
+   "3": 19,
+   "4": 13,
+   "5": 12,
+   "6": 16,
+   "7": 20,
+   "8": 9,
+   "9": 7
+  },
   "tiene_export": true,
   "archivo_export": "482_huantashiri.xlsx"
  },
@@ -1543,6 +1839,17 @@
    "2024": 117,
    "2025": 119,
    "2026": 140
+  },
+  "por_mes_afil_2026": {
+   "1": 4,
+   "2": 15,
+   "3": 18,
+   "4": 16,
+   "5": 24,
+   "6": 23,
+   "7": 24,
+   "8": 10,
+   "9": 6
   },
   "tiene_export": true,
   "archivo_export": "483_sanibeni.xlsx"
@@ -1600,6 +1907,15 @@
    "2025": 35,
    "2026": 36
   },
+  "por_mes_afil_2026": {
+   "1": 5,
+   "2": 5,
+   "3": 3,
+   "4": 2,
+   "5": 4,
+   "6": 11,
+   "7": 6
+  },
   "tiene_export": true,
   "archivo_export": "7187_vista-alegre-del-valle-de-santa-cruz.xlsx"
  },
@@ -1654,6 +1970,17 @@
    "2024": 153,
    "2025": 173,
    "2026": 125
+  },
+  "por_mes_afil_2026": {
+   "1": 14,
+   "2": 16,
+   "3": 17,
+   "4": 12,
+   "5": 7,
+   "6": 20,
+   "7": 10,
+   "8": 19,
+   "9": 10
   },
   "tiene_export": true,
   "archivo_export": "16908_gloriabamba.xlsx"
@@ -1710,6 +2037,17 @@
    "2025": 36,
    "2026": 50
   },
+  "por_mes_afil_2026": {
+   "1": 4,
+   "2": 1,
+   "3": 4,
+   "4": 4,
+   "5": 5,
+   "6": 15,
+   "7": 12,
+   "8": 4,
+   "9": 1
+  },
   "tiene_export": true,
   "archivo_export": "472_oviri.xlsx"
  },
@@ -1764,6 +2102,17 @@
    "2024": 65,
    "2025": 55,
    "2026": 61
+  },
+  "por_mes_afil_2026": {
+   "1": 4,
+   "2": 9,
+   "3": 8,
+   "4": 2,
+   "5": 4,
+   "6": 18,
+   "7": 10,
+   "8": 4,
+   "9": 2
   },
   "tiene_export": true,
   "archivo_export": "474_quiteni.xlsx"
@@ -1820,6 +2169,17 @@
    "2025": 107,
    "2026": 74
   },
+  "por_mes_afil_2026": {
+   "1": 5,
+   "2": 4,
+   "3": 4,
+   "4": 3,
+   "5": 18,
+   "6": 18,
+   "7": 11,
+   "8": 7,
+   "9": 4
+  },
   "tiene_export": true,
   "archivo_export": "517_valle-esmeralda.xlsx"
  },
@@ -1874,6 +2234,17 @@
    "2024": 105,
    "2025": 120,
    "2026": 97
+  },
+  "por_mes_afil_2026": {
+   "1": 8,
+   "2": 5,
+   "3": 11,
+   "4": 11,
+   "5": 8,
+   "6": 20,
+   "7": 18,
+   "8": 12,
+   "9": 4
   },
   "tiene_export": true,
   "archivo_export": "15914_selva-de-oro.xlsx"
@@ -1930,6 +2301,16 @@
    "2025": 47,
    "2026": 62
   },
+  "por_mes_afil_2026": {
+   "2": 3,
+   "3": 6,
+   "4": 4,
+   "5": 4,
+   "6": 22,
+   "7": 10,
+   "8": 7,
+   "9": 6
+  },
   "tiene_export": true,
   "archivo_export": "459_cushireni.xlsx"
  },
@@ -1984,6 +2365,17 @@
    "2024": 36,
    "2025": 117,
    "2026": 55
+  },
+  "por_mes_afil_2026": {
+   "1": 5,
+   "2": 8,
+   "3": 8,
+   "4": 7,
+   "5": 8,
+   "6": 8,
+   "7": 4,
+   "8": 4,
+   "9": 3
   },
   "tiene_export": true,
   "archivo_export": "468_micaela-bastidas-morales.xlsx"
@@ -2040,6 +2432,17 @@
    "2025": 34,
    "2026": 46
   },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 2,
+   "3": 5,
+   "4": 4,
+   "5": 1,
+   "6": 13,
+   "7": 10,
+   "8": 9,
+   "9": 1
+  },
   "tiene_export": true,
   "archivo_export": "463_boca-chembo.xlsx"
  },
@@ -2051,8 +2454,8 @@
   "distrito": "Satipo",
   "direccion": "Camino Rural Comunidad Nativa Shanqui Distrito Satipo Provincia Satipo Departamento Junin",
   "microrred": "Rio Negro-Satipo",
-  "lat": -11.165262,
-  "lng": -74.533882,
+  "lat": -11.2555478,
+  "lng": -74.6394331,
   "es_punto_digitacion": false,
   "etiqueta_punto": "",
   "total_afiliados": 1061,
@@ -2093,6 +2496,17 @@
    "2024": 97,
    "2025": 227,
    "2026": 184
+  },
+  "por_mes_afil_2026": {
+   "1": 17,
+   "2": 17,
+   "3": 31,
+   "4": 17,
+   "5": 27,
+   "6": 18,
+   "7": 22,
+   "8": 23,
+   "9": 12
   },
   "tiene_export": true,
   "archivo_export": "29375_comunidad-nativa-shanqui.xlsx"
@@ -2150,6 +2564,17 @@
    "2025": 71,
    "2026": 61
   },
+  "por_mes_afil_2026": {
+   "1": 5,
+   "2": 5,
+   "3": 10,
+   "4": 5,
+   "5": 9,
+   "6": 11,
+   "7": 7,
+   "8": 7,
+   "9": 2
+  },
   "tiene_export": true,
   "archivo_export": "491_hermosa-pampa.xlsx"
  },
@@ -2204,6 +2629,17 @@
    "2024": 209,
    "2025": 174,
    "2026": 124
+  },
+  "por_mes_afil_2026": {
+   "1": 12,
+   "2": 10,
+   "3": 17,
+   "4": 21,
+   "5": 11,
+   "6": 11,
+   "7": 18,
+   "8": 19,
+   "9": 5
   },
   "tiene_export": true,
   "archivo_export": "16911_buenos-aires.xlsx"
@@ -2260,6 +2696,17 @@
    "2025": 212,
    "2026": 178
   },
+  "por_mes_afil_2026": {
+   "1": 9,
+   "2": 19,
+   "3": 26,
+   "4": 24,
+   "5": 19,
+   "6": 18,
+   "7": 21,
+   "8": 29,
+   "9": 13
+  },
   "tiene_export": true,
   "archivo_export": "10502_bella-esperanza.xlsx"
  },
@@ -2314,6 +2761,17 @@
    "2024": 129,
    "2025": 170,
    "2026": 133
+  },
+  "por_mes_afil_2026": {
+   "1": 6,
+   "2": 14,
+   "3": 19,
+   "4": 18,
+   "5": 12,
+   "6": 14,
+   "7": 15,
+   "8": 25,
+   "9": 10
   },
   "tiene_export": true,
   "archivo_export": "16912_villa-progreso-de-eden.xlsx"
@@ -2370,6 +2828,17 @@
    "2025": 49,
    "2026": 61
   },
+  "por_mes_afil_2026": {
+   "1": 2,
+   "2": 5,
+   "3": 7,
+   "4": 2,
+   "5": 13,
+   "6": 13,
+   "7": 9,
+   "8": 8,
+   "9": 2
+  },
   "tiene_export": true,
   "archivo_export": "516_puerto-roca.xlsx"
  },
@@ -2422,6 +2891,17 @@
    "2024": 224,
    "2025": 210,
    "2026": 138
+  },
+  "por_mes_afil_2026": {
+   "1": 16,
+   "2": 18,
+   "3": 24,
+   "4": 17,
+   "5": 4,
+   "6": 16,
+   "7": 11,
+   "8": 21,
+   "9": 11
   },
   "tiene_export": true,
   "archivo_export": "16909_teoria.xlsx"
@@ -2478,6 +2958,17 @@
    "2025": 135,
    "2026": 133
   },
+  "por_mes_afil_2026": {
+   "1": 6,
+   "2": 15,
+   "3": 21,
+   "4": 21,
+   "5": 7,
+   "6": 22,
+   "7": 20,
+   "8": 14,
+   "9": 7
+  },
   "tiene_export": true,
   "archivo_export": "481_paratushali.xlsx"
  },
@@ -2532,6 +3023,16 @@
    "2024": 47,
    "2025": 36,
    "2026": 47
+  },
+  "por_mes_afil_2026": {
+   "1": 4,
+   "2": 2,
+   "3": 7,
+   "4": 2,
+   "5": 5,
+   "6": 14,
+   "7": 11,
+   "8": 2
   },
   "tiene_export": true,
   "archivo_export": "461_shevoja.xlsx"
@@ -2589,6 +3090,17 @@
    "2025": 60,
    "2026": 42
   },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 4,
+   "3": 8,
+   "4": 3,
+   "5": 12,
+   "6": 6,
+   "7": 3,
+   "8": 2,
+   "9": 3
+  },
   "tiene_export": true,
   "archivo_export": "501_alto-pitocuna.xlsx"
  },
@@ -2643,6 +3155,16 @@
    "2025": 32,
    "2026": 41
   },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 4,
+   "3": 4,
+   "4": 2,
+   "5": 5,
+   "6": 13,
+   "7": 10,
+   "8": 2
+  },
   "tiene_export": true,
   "archivo_export": "465_capitiri.xlsx"
  },
@@ -2696,6 +3218,17 @@
    "2024": 61,
    "2025": 181,
    "2026": 93
+  },
+  "por_mes_afil_2026": {
+   "1": 18,
+   "2": 14,
+   "3": 9,
+   "4": 6,
+   "5": 8,
+   "6": 12,
+   "7": 13,
+   "8": 9,
+   "9": 4
   },
   "tiene_export": true,
   "archivo_export": "33856_cheni.xlsx"
@@ -2752,6 +3285,17 @@
    "2025": 58,
    "2026": 49
   },
+  "por_mes_afil_2026": {
+   "1": 5,
+   "2": 3,
+   "3": 11,
+   "4": 2,
+   "5": 5,
+   "6": 10,
+   "7": 5,
+   "8": 5,
+   "9": 3
+  },
   "tiene_export": true,
   "archivo_export": "511_san-juan-de-mantaro.xlsx"
  },
@@ -2806,6 +3350,16 @@
    "2024": 74,
    "2025": 38,
    "2026": 38
+  },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 3,
+   "3": 6,
+   "4": 3,
+   "5": 2,
+   "6": 13,
+   "7": 6,
+   "8": 4
   },
   "tiene_export": true,
   "archivo_export": "470_san-miguel-de-otica.xlsx"
@@ -2863,6 +3417,17 @@
    "2025": 75,
    "2026": 76
   },
+  "por_mes_afil_2026": {
+   "1": 8,
+   "2": 11,
+   "3": 11,
+   "4": 9,
+   "5": 11,
+   "6": 6,
+   "7": 8,
+   "8": 5,
+   "9": 7
+  },
   "tiene_export": true,
   "archivo_export": "496_villa-capiri.xlsx"
  },
@@ -2916,6 +3481,16 @@
    "2024": 19,
    "2025": 13,
    "2026": 20
+  },
+  "por_mes_afil_2026": {
+   "1": 2,
+   "2": 1,
+   "3": 4,
+   "4": 7,
+   "5": 1,
+   "6": 2,
+   "7": 1,
+   "8": 2
   },
   "tiene_export": true,
   "archivo_export": "512_tunontuari-rio-ene.xlsx"
@@ -2972,6 +3547,17 @@
    "2025": 145,
    "2026": 116
   },
+  "por_mes_afil_2026": {
+   "1": 16,
+   "2": 16,
+   "3": 17,
+   "4": 9,
+   "5": 5,
+   "6": 14,
+   "7": 14,
+   "8": 16,
+   "9": 9
+  },
   "tiene_export": true,
   "archivo_export": "13863_alto-villa-victoria.xlsx"
  },
@@ -3026,6 +3612,14 @@
    "2024": 21,
    "2025": 20,
    "2026": 13
+  },
+  "por_mes_afil_2026": {
+   "1": 2,
+   "3": 3,
+   "4": 4,
+   "6": 1,
+   "8": 2,
+   "9": 1
   },
   "tiene_export": true,
   "archivo_export": "7185_pampa-mandarina.xlsx"
@@ -3082,6 +3676,17 @@
    "2025": 46,
    "2026": 53
   },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 5,
+   "3": 8,
+   "4": 9,
+   "5": 4,
+   "6": 4,
+   "7": 7,
+   "8": 12,
+   "9": 3
+  },
   "tiene_export": true,
   "archivo_export": "433_belen.xlsx"
  },
@@ -3134,6 +3739,17 @@
    "2024": 83,
    "2025": 54,
    "2026": 87
+  },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 5,
+   "3": 5,
+   "4": 19,
+   "5": 10,
+   "6": 15,
+   "7": 18,
+   "8": 8,
+   "9": 6
   },
   "tiene_export": true,
   "archivo_export": "515_yaviro.xlsx"
@@ -3190,6 +3806,17 @@
    "2025": 51,
    "2026": 54
   },
+  "por_mes_afil_2026": {
+   "1": 7,
+   "2": 9,
+   "3": 5,
+   "4": 5,
+   "5": 6,
+   "6": 5,
+   "7": 6,
+   "8": 6,
+   "9": 5
+  },
   "tiene_export": true,
   "archivo_export": "502_cushiviani.xlsx"
  },
@@ -3244,6 +3871,17 @@
    "2024": 141,
    "2025": 171,
    "2026": 132
+  },
+  "por_mes_afil_2026": {
+   "1": 17,
+   "2": 20,
+   "3": 22,
+   "4": 9,
+   "5": 12,
+   "6": 13,
+   "7": 14,
+   "8": 17,
+   "9": 8
   },
   "tiene_export": true,
   "archivo_export": "13862_miguel-grau.xlsx"
@@ -3300,6 +3938,16 @@
    "2025": 57,
    "2026": 45
   },
+  "por_mes_afil_2026": {
+   "2": 9,
+   "3": 6,
+   "4": 2,
+   "5": 8,
+   "6": 6,
+   "7": 5,
+   "8": 7,
+   "9": 2
+  },
   "tiene_export": true,
   "archivo_export": "492_santa-rosita.xlsx"
  },
@@ -3355,6 +4003,16 @@
    "2025": 30,
    "2026": 36
   },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 3,
+   "3": 6,
+   "4": 1,
+   "5": 3,
+   "6": 12,
+   "7": 8,
+   "8": 2
+  },
   "tiene_export": true,
   "archivo_export": "467_shima.xlsx"
  },
@@ -3408,6 +4066,17 @@
    "2024": 59,
    "2025": 109,
    "2026": 87
+  },
+  "por_mes_afil_2026": {
+   "1": 2,
+   "2": 7,
+   "3": 19,
+   "4": 14,
+   "5": 6,
+   "6": 15,
+   "7": 11,
+   "8": 10,
+   "9": 3
   },
   "tiene_export": true,
   "archivo_export": "484_alto-paureli.xlsx"
@@ -3464,6 +4133,17 @@
    "2025": 74,
    "2026": 76
   },
+  "por_mes_afil_2026": {
+   "1": 3,
+   "2": 6,
+   "3": 6,
+   "4": 4,
+   "5": 7,
+   "6": 14,
+   "7": 22,
+   "8": 10,
+   "9": 4
+  },
   "tiene_export": true,
   "archivo_export": "514_fe-y-alegria-la-primavera.xlsx"
  },
@@ -3518,6 +4198,17 @@
    "2024": 48,
    "2025": 41,
    "2026": 42
+  },
+  "por_mes_afil_2026": {
+   "1": 5,
+   "2": 9,
+   "3": 6,
+   "4": 5,
+   "5": 3,
+   "6": 5,
+   "7": 5,
+   "8": 2,
+   "9": 2
   },
   "tiene_export": true,
   "archivo_export": "486_san-pedro.xlsx"
@@ -3574,6 +4265,17 @@
    "2025": 35,
    "2026": 38
   },
+  "por_mes_afil_2026": {
+   "1": 5,
+   "2": 4,
+   "3": 2,
+   "4": 3,
+   "5": 7,
+   "6": 6,
+   "7": 1,
+   "8": 7,
+   "9": 3
+  },
   "tiene_export": true,
   "archivo_export": "509_san-miguel-de-ene-shinpinshariato.xlsx"
  },
@@ -3627,6 +4329,17 @@
    "2024": 92,
    "2025": 120,
    "2026": 121
+  },
+  "por_mes_afil_2026": {
+   "1": 7,
+   "2": 9,
+   "3": 20,
+   "4": 11,
+   "5": 7,
+   "6": 21,
+   "7": 22,
+   "8": 14,
+   "9": 10
   },
   "tiene_export": true,
   "archivo_export": "480_bajo-capiro.xlsx"
@@ -3683,6 +4396,17 @@
    "2025": 55,
    "2026": 55
   },
+  "por_mes_afil_2026": {
+   "1": 3,
+   "2": 6,
+   "3": 11,
+   "4": 6,
+   "5": 4,
+   "6": 10,
+   "7": 6,
+   "8": 7,
+   "9": 2
+  },
   "tiene_export": true,
   "archivo_export": "498_pitocuna.xlsx"
  },
@@ -3736,6 +4460,16 @@
    "2024": 31,
    "2025": 32,
    "2026": 40
+  },
+  "por_mes_afil_2026": {
+   "2": 6,
+   "3": 10,
+   "4": 3,
+   "5": 5,
+   "6": 6,
+   "7": 5,
+   "8": 4,
+   "9": 1
   },
   "tiene_export": true,
   "archivo_export": "6879_union-puerto-ashaninka.xlsx"
@@ -3792,6 +4526,17 @@
    "2025": 59,
    "2026": 53
   },
+  "por_mes_afil_2026": {
+   "1": 4,
+   "2": 6,
+   "3": 9,
+   "4": 5,
+   "5": 6,
+   "6": 8,
+   "7": 6,
+   "8": 6,
+   "9": 3
+  },
   "tiene_export": true,
   "archivo_export": "507_boca-mantaro.xlsx"
  },
@@ -3844,6 +4589,16 @@
    "2024": 55,
    "2025": 27,
    "2026": 38
+  },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 3,
+   "3": 3,
+   "4": 1,
+   "5": 4,
+   "6": 13,
+   "7": 9,
+   "8": 4
   },
   "tiene_export": true,
   "archivo_export": "518_san-carlos-alto-ene.xlsx"
@@ -3898,6 +4653,17 @@
    "2024": 33,
    "2025": 30,
    "2026": 36
+  },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 6,
+   "3": 3,
+   "4": 1,
+   "5": 3,
+   "6": 11,
+   "7": 8,
+   "8": 2,
+   "9": 1
   },
   "tiene_export": true,
   "archivo_export": "475_caperusia.xlsx"
@@ -3954,6 +4720,17 @@
    "2025": 84,
    "2026": 62
   },
+  "por_mes_afil_2026": {
+   "1": 9,
+   "2": 5,
+   "3": 7,
+   "4": 12,
+   "5": 4,
+   "6": 9,
+   "7": 4,
+   "8": 7,
+   "9": 5
+  },
   "tiene_export": true,
   "archivo_export": "17678_huancamachay.xlsx"
  },
@@ -4005,6 +4782,17 @@
    "2024": 33,
    "2025": 187,
    "2026": 136
+  },
+  "por_mes_afil_2026": {
+   "1": 19,
+   "2": 15,
+   "3": 20,
+   "4": 22,
+   "5": 7,
+   "6": 17,
+   "7": 11,
+   "8": 23,
+   "9": 2
   },
   "tiene_export": true,
   "archivo_export": "35042_comunidad-nativa-mazaroveni.xlsx"
@@ -4061,6 +4849,17 @@
    "2025": 26,
    "2026": 49
   },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 3,
+   "3": 5,
+   "4": 2,
+   "5": 1,
+   "6": 22,
+   "7": 12,
+   "8": 2,
+   "9": 1
+  },
   "tiene_export": true,
   "archivo_export": "464_impanekiari.xlsx"
  },
@@ -4116,6 +4915,17 @@
    "2025": 56,
    "2026": 46
   },
+  "por_mes_afil_2026": {
+   "1": 3,
+   "2": 6,
+   "3": 10,
+   "4": 4,
+   "5": 4,
+   "6": 7,
+   "7": 7,
+   "8": 3,
+   "9": 2
+  },
   "tiene_export": true,
   "archivo_export": "505_san-juan-de-cheni.xlsx"
  },
@@ -4170,6 +4980,17 @@
    "2025": 30,
    "2026": 35
   },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 4,
+   "3": 6,
+   "4": 2,
+   "5": 3,
+   "6": 7,
+   "7": 6,
+   "8": 4,
+   "9": 2
+  },
   "tiene_export": true,
   "archivo_export": "6878_potsoteni.xlsx"
  },
@@ -4223,6 +5044,17 @@
    "2024": 35,
    "2025": 27,
    "2026": 41
+  },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 3,
+   "3": 4,
+   "4": 3,
+   "5": 4,
+   "6": 13,
+   "7": 8,
+   "8": 3,
+   "9": 2
   },
   "tiene_export": true,
   "archivo_export": "466_santa-rosita-de-shirintiari.xlsx"
@@ -4279,6 +5111,17 @@
    "2025": 23,
    "2026": 23
   },
+  "por_mes_afil_2026": {
+   "1": 2,
+   "2": 2,
+   "3": 3,
+   "4": 2,
+   "5": 3,
+   "6": 3,
+   "7": 4,
+   "8": 3,
+   "9": 1
+  },
   "tiene_export": true,
   "archivo_export": "503_union-cuviriaki.xlsx"
  },
@@ -4334,6 +5177,16 @@
    "2025": 30,
    "2026": 26
   },
+  "por_mes_afil_2026": {
+   "1": 4,
+   "2": 3,
+   "3": 3,
+   "4": 4,
+   "6": 4,
+   "7": 3,
+   "8": 3,
+   "9": 2
+  },
   "tiene_export": true,
   "archivo_export": "487_santa-maria.xlsx"
  },
@@ -4386,6 +5239,17 @@
    "2024": 35,
    "2025": 209,
    "2026": 155
+  },
+  "por_mes_afil_2026": {
+   "1": 10,
+   "2": 17,
+   "3": 28,
+   "4": 11,
+   "5": 16,
+   "6": 23,
+   "7": 17,
+   "8": 24,
+   "9": 9
   },
   "tiene_export": true,
   "archivo_export": "34004_union-junin.xlsx"
@@ -4442,6 +5306,17 @@
    "2025": 27,
    "2026": 33
   },
+  "por_mes_afil_2026": {
+   "1": 2,
+   "2": 5,
+   "3": 6,
+   "4": 4,
+   "5": 3,
+   "6": 4,
+   "7": 3,
+   "8": 4,
+   "9": 2
+  },
   "tiene_export": true,
   "archivo_export": "504_shabashipango.xlsx"
  },
@@ -4497,6 +5372,14 @@
    "2025": 12,
    "2026": 11
   },
+  "por_mes_afil_2026": {
+   "2": 2,
+   "3": 3,
+   "5": 1,
+   "6": 2,
+   "7": 2,
+   "9": 1
+  },
   "tiene_export": true,
   "archivo_export": "489_buenos-aires.xlsx"
  },
@@ -4551,6 +5434,15 @@
    "2025": 23,
    "2026": 12
   },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 1,
+   "3": 3,
+   "5": 2,
+   "6": 3,
+   "7": 1,
+   "8": 1
+  },
   "tiene_export": true,
   "archivo_export": "510_florida.xlsx"
  },
@@ -4604,6 +5496,15 @@
    "2025": 7,
    "2026": 12
   },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 2,
+   "3": 3,
+   "4": 1,
+   "6": 3,
+   "7": 1,
+   "8": 1
+  },
   "tiene_export": true,
   "archivo_export": "6876_toldopampa.xlsx"
  },
@@ -4615,8 +5516,8 @@
   "distrito": "Vizcatan Del Ene",
   "direccion": "Trocha Carrozable Terrestre A Orillas Del  Rió  Ene Vizcatan Del Ene Satipo Junin",
   "microrred": "Valle Esmeralda",
-  "lat": -12.123696,
-  "lng": -74.014675,
+  "lat": -12.8452229,
+  "lng": -73.6217937,
   "es_punto_digitacion": false,
   "etiqueta_punto": "",
   "total_afiliados": 189,
@@ -4649,6 +5550,17 @@
    "2024": 3,
    "2025": 98,
    "2026": 70
+  },
+  "por_mes_afil_2026": {
+   "1": 8,
+   "2": 8,
+   "3": 10,
+   "4": 7,
+   "5": 7,
+   "6": 11,
+   "7": 6,
+   "8": 9,
+   "9": 4
   },
   "tiene_export": true,
   "archivo_export": "32840_paquichari.xlsx"
@@ -4688,6 +5600,17 @@
    "2024": 4,
    "2025": 80,
    "2026": 86
+  },
+  "por_mes_afil_2026": {
+   "1": 11,
+   "2": 11,
+   "3": 10,
+   "4": 9,
+   "5": 4,
+   "6": 8,
+   "7": 20,
+   "8": 11,
+   "9": 2
   },
   "tiene_export": true,
   "archivo_export": "34721_lurinchincha.xlsx"
@@ -4743,6 +5666,15 @@
    "2025": 9,
    "2026": 13
   },
+  "por_mes_afil_2026": {
+   "2": 4,
+   "3": 2,
+   "5": 1,
+   "6": 3,
+   "7": 1,
+   "8": 1,
+   "9": 1
+  },
   "tiene_export": true,
   "archivo_export": "488_san-andres.xlsx"
  },
@@ -4782,6 +5714,17 @@
    "2024": 11,
    "2025": 62,
    "2026": 73
+  },
+  "por_mes_afil_2026": {
+   "1": 4,
+   "2": 7,
+   "3": 14,
+   "4": 6,
+   "5": 5,
+   "6": 14,
+   "7": 10,
+   "8": 12,
+   "9": 1
   },
   "tiene_export": true,
   "archivo_export": "34003_san-francisco-de-cubaro.xlsx"
@@ -4833,6 +5776,16 @@
    "2024": 13,
    "2025": 12,
    "2026": 17
+  },
+  "por_mes_afil_2026": {
+   "1": 1,
+   "2": 1,
+   "3": 3,
+   "4": 2,
+   "5": 4,
+   "6": 3,
+   "7": 2,
+   "9": 1
   },
   "tiene_export": true,
   "archivo_export": "494_apalla-calabaza.xlsx"
@@ -4886,6 +5839,13 @@
    "2025": 11,
    "2026": 7
   },
+  "por_mes_afil_2026": {
+   "2": 2,
+   "3": 2,
+   "5": 1,
+   "6": 1,
+   "7": 1
+  },
   "tiene_export": true,
   "archivo_export": "7186_palmapampa.xlsx"
  },
@@ -4897,8 +5857,8 @@
   "distrito": "Satipo",
   "direccion": "Calle Los Naranjos 3 H 5-A Villalobos A 3 Cuadras De La I.E.E. El Progreso Satipo Satipo Junin",
   "microrred": null,
-  "lat": -11.257574,
-  "lng": -74.648135,
+  "lat": -11.254106,
+  "lng": -74.638158,
   "es_punto_digitacion": true,
   "etiqueta_punto": "Centro de Salud Mental Comunitario Satipo",
   "total_afiliados": 0,
@@ -4906,6 +5866,7 @@
   "grupo_etareo": {},
   "grupo_poblacional": {},
   "por_anio_afil": {},
+  "por_mes_afil_2026": {},
   "tiene_export": false,
   "archivo_export": null
  }

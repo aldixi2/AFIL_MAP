@@ -43,15 +43,41 @@ function normalizeClasificacion(k){
 
 function renderAgeIcons(age,total){
  const keys=Object.keys(AGE_LABELS);
- $('ageIcons').innerHTML=keys.map((k,i)=>`<div class="age-item">${AGE_ICONS[i]}<div class="age-label">${AGE_LABELS[k]}</div><div class="age-pct">${fmt(age[k]||0)} · ${pct(age[k]||0,total).toFixed(1)}%</div></div>`).join('');
+ $('ageIcons').innerHTML=keys.map((k,i)=>{const v=Number(age[k]||0);return `<div class="age-item" data-age="${k}" style="flex:${Math.max(v,1)}">${AGE_ICONS[i]}<div class="age-label">${AGE_LABELS[k]}</div><div class="age-pct">${fmt(v)} · ${pct(v,total).toFixed(1)}%</div></div>`}).join('');
  $('ageBar').innerHTML=keys.map((k,i)=>{const v=Number(age[k]||0),p=pct(v,total);return `<div class="age-segment" style="flex:${Math.max(v,1)}" data-age="${k}" title="${AGE_LABELS[k]}: ${fmt(v)} afiliados (${p.toFixed(1)}%)"><div class="inside"><b>${AGE_LABELS[k]}</b><strong>${fmt(v)}</strong><small>${p.toFixed(1)}%</small></div></div>`}).join('');
- $('ageBar').querySelectorAll('.age-segment').forEach(el=>el.addEventListener('click',()=>{ $('ageBar').querySelectorAll('.age-segment').forEach(x=>x.style.outline=''); el.style.outline='3px solid rgba(39,52,68,.28)'; }));
+ $('ageBar').querySelectorAll('.age-segment').forEach(el=>el.addEventListener('mouseenter',()=>{const k=el.dataset.age;$('ageIcons').querySelectorAll('.age-item').forEach(x=>x.style.opacity=x.dataset.age===k?'1':'.55');el.style.filter='brightness(1.08)'}));
+ $('ageBar').querySelectorAll('.age-segment').forEach(el=>el.addEventListener('mouseleave',()=>{$('ageIcons').querySelectorAll('.age-item').forEach(x=>x.style.opacity='1');el.style.filter=''}));
+ $('ageIcons').querySelectorAll('.age-item').forEach(el=>el.addEventListener('mouseenter',()=>{const k=el.dataset.age;const seg=$('ageBar').querySelector(`[data-age="${CSS.escape(k)}"]`);if(seg){seg.style.filter='brightness(1.08)';seg.style.outline='2px solid rgba(39,52,68,.22)'}}));
+ $('ageIcons').querySelectorAll('.age-item').forEach(el=>el.addEventListener('mouseleave',()=>{$('ageBar').querySelectorAll('.age-segment').forEach(x=>{x.style.filter='';x.style.outline=''})}));
 }
 function ageChart(){ return null; }
 function animateNumber(el,target){
  const start=Number(el.dataset.value||0), duration=550, t0=performance.now(); el.dataset.value=target;
  function step(t){const p=Math.min(1,(t-t0)/duration),e=1-Math.pow(1-p,3);el.textContent=fmt(Math.round(start+(target-start)*e));if(p<1)requestAnimationFrame(step)}
  requestAnimationFrame(step);
+}
+function monthlyData(arr){
+ const labels=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+ const altas=Array(12).fill(0);
+ arr.forEach(x=>{const m=x.por_mes_afil_2026||{};for(let i=1;i<=12;i++)altas[i-1]+=Number(m[String(i)]||0)});
+ const acumulado=[];let s=0;altas.forEach(v=>{s+=v;acumulado.push(s)});
+ return {labels,altas,acumulado};
+}
+function renderMonthly(arr){
+ const md=monthlyData(arr);
+ const corteMonth=8;
+ const labels=md.labels.slice(0,corteMonth), altas=md.altas.slice(0,corteMonth), acum=md.acumulado.slice(0,corteMonth);
+ const idx=Math.max(0,Math.min(corteMonth-1,new Date().getMonth()));
+ const totalMes=altas[idx]||0, totalAcum=acum[idx]||0;
+ $('monthlyTotal').textContent=fmt(totalMes);$('monthlyAccum').textContent=fmt(totalAcum);
+ const hasMonthly=altas.some(v=>v>0);
+ $('chartMensual').style.display=hasMonthly?'block':'none';
+ const holder=$('chartMensual').parentElement; let msg=holder.querySelector('.monthly-empty'); if(!hasMonthly){if(!msg){msg=document.createElement('div');msg.className='monthly-empty';holder.appendChild(msg)}msg.textContent='Los cortes mensuales se habilitan al ejecutar la consolidación con la columna mes_afil de la base SIS.'}else if(msg)msg.remove();
+ if(CHARTS.mensual)CHARTS.mensual.destroy();
+ CHARTS.mensual=new Chart($('chartMensual'),{type:'line',data:{labels,datasets:[
+  {label:'Altas del mes',data:altas,borderColor:'#1881d4',backgroundColor:'rgba(24,129,212,.10)',fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2},
+  {label:'Acumulado 2026',data:acum,borderColor:'#76b82a',backgroundColor:'transparent',tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2}
+ ]},options:{responsive:true,maintainAspectRatio:false,animation:false,devicePixelRatio:2,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{x:{ticks:{font:{size:8}} ,grid:{display:false}},y:{beginAtZero:true,ticks:{font:{size:8},callback:v=>fmt(v)},grid:{color:'#e7edf4'}}}}});
 }
 function render(){
  const arr=filtered(),total=arr.reduce((s,x)=>s+Number(x.total_afiliados||0),0);
@@ -70,6 +96,7 @@ function render(){
  CHARTS.dist=new Chart($('chartDistrito'),{type:'bar',data:{labels:de.map(([k])=>short(k,18)),datasets:[{data:de.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:6,barThickness:18}]},options:{...chartOpts('y'),onClick:(evt,els)=>{if(els.length){const d=de[els[0].index]?.[0];if(d){$('filtroDistrito').value=d;fillEstablecimientos(d,'Todos');SELECTED_CODE='Todos';cerrarDetalleSinRender();render()}}}},plugins:[valueLabelsPlugin]});
  const pop=aggregate(arr,'grupo_poblacional');let po=Object.entries(pop).sort((a,b)=>b[1]-a[1]).slice(0,6);
  CHARTS.pop=new Chart($('chartPoblacion'),{type:'bar',data:{labels:po.map(([k])=>short(k,23)),datasets:[{data:po.map(([,v])=>v),backgroundColor:PALETTE,borderRadius:6,barThickness:17}]},options:chartOpts('y'),plugins:[valueLabelsPlugin]});
+ renderMonthly(arr);
  updateMarkerSelection();
 }
 function icono(item){let c=COLORS.blue;if(item.es_punto_digitacion)c=COLORS.orange;else if(Number(item.total_afiliados)>3000)c=COLORS.pink;const s=item.es_punto_digitacion?18:Math.max(9,Math.min(24,8+Math.sqrt(Number(item.total_afiliados)||0)/6));return L.divIcon({className:'',html:`<div class="map-dot" style="width:${s}px;height:${s}px;background:${c}"></div>`,iconSize:[s,s],iconAnchor:[s/2,s/2]})}
