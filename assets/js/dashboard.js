@@ -58,10 +58,10 @@ function animateNumber(el,target){
 }
 function monthlyData(arr){
  const labels=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
- const src=(MANIFEST&&MANIFEST.por_mes_afil_2026)||null;
  const altas=Array(12).fill(0);
- if(src){ for(let i=1;i<=12;i++) altas[i-1]=Number(src[String(i)]||0); }
- else { arr.forEach(x=>{const m=x.por_mes_afil_2026||{};for(let i=1;i<=12;i++)altas[i-1]+=Number(m[String(i)]||0)}); }
+ // Se calcula desde los establecimientos visibles/filtrados para que
+ // distrito y establecimiento también filtren este gráfico.
+ arr.forEach(x=>{const m=x.por_mes_afil_2026||{};for(let i=1;i<=12;i++)altas[i-1]+=Number(m[String(i)]||0)});
  const acumulado=[];let s=0;altas.forEach(v=>{s+=v;acumulado.push(s)});
  return {labels,altas,acumulado};
 }
