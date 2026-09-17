@@ -1,0 +1,3 @@
+Versión V11. Correcciones: detalle de establecimiento compacto, descarga Excel funcional, gráfico mensual visible y datos mensuales 2026 generados desde FECHA_AFIL de los padrones exportados.
+
+Abrir index.html.

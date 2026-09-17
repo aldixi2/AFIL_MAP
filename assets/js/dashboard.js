@@ -70,7 +70,9 @@ function renderMonthly(arr){
  const rawCut=(MANIFEST&&MANIFEST.generado||'').slice(0,10);
  let corteMonth=8;
  if(rawCut){const mm=parseInt(rawCut.slice(5,7),10);if(mm>=1&&mm<=12)corteMonth=mm;}
- const labels=md.labels.slice(0,corteMonth), altas=md.altas.slice(0,corteMonth), acum=md.acumulado.slice(0,corteMonth);
+ const lastData=md.altas.reduce((last,v,i)=>v>0?i+1:last,0);
+ const visibleMonths=Math.max(1,Math.min(12,Math.max(corteMonth,lastData)));
+ const labels=md.labels.slice(0,visibleMonths), altas=md.altas.slice(0,visibleMonths), acum=md.acumulado.slice(0,visibleMonths);
  const idx=Math.max(0,labels.length-1);
  const totalMes=altas[idx]||0, totalAcum=acum[idx]||0;
  $('monthlyTotal').textContent=fmt(totalMes);$('monthlyAccum').textContent=fmt(totalAcum);
@@ -106,7 +108,11 @@ function render(){
  updateMarkerSelection();
 }
 function icono(item){let c=COLORS.blue;if(item.es_punto_digitacion)c=COLORS.orange;else if(Number(item.total_afiliados)>3000)c=COLORS.pink;const s=item.es_punto_digitacion?18:Math.max(9,Math.min(24,8+Math.sqrt(Number(item.total_afiliados)||0)/6));return L.divIcon({className:'',html:`<div class="map-dot" style="width:${s}px;height:${s}px;background:${c}"></div>`,iconSize:[s,s],iconAnchor:[s/2,s/2]})}
-function detalle(item){const dl=item.tiene_export?`<a href="exports/${encodeURIComponent(item.archivo_export)}" download>⬇ Excel</a>`:'';$('detalle').className='detail';$('detalle').innerHTML=`<div class="dname">${esc(item.nombre)}</div><div class="dmeta">${esc(item.distrito)} · ${esc(item.clasificacion)}${item.categoria?' · '+esc(item.categoria):''}</div><div class="dtotal">${fmt(item.total_afiliados)} <small>afiliados</small></div><div class="actions">${dl}<button onclick="cerrarDetalle()">Cerrar</button></div>`}
+function detalle(item){
+ const dl=item.tiene_export&&item.archivo_export?`<a href="./exports/${encodeURIComponent(item.archivo_export)}" download="${esc(item.archivo_export)}" target="_self">⬇ Excel</a>`:'';
+ $('detalle').className='detail';
+ $('detalle').innerHTML=`<div><div class="dname" title="${esc(item.nombre)}">${esc(item.nombre)}</div><div class="dmeta">${esc(item.distrito)} · ${esc(item.clasificacion)}${item.categoria?' · '+esc(item.categoria):''}</div></div><div class="dtotal">${fmt(item.total_afiliados)} <small>afiliados</small></div><div class="actions">${dl}<button onclick="cerrarDetalle()">Cerrar</button></div>`
+}
 function cerrarDetalle(){SELECTED_CODE='Todos';$('filtroEstablecimiento').value='Todos';$('detalle').className='detail empty';$('detalle').textContent='Selecciona un establecimiento en el mapa para ver el detalle y descargar su padrón.';updateMarkerSelection();renderWithoutMapLoop()}window.cerrarDetalle=cerrarDetalle;
 function renderWithoutMapLoop(){const old=window.__skipMarkerUpdate;window.__skipMarkerUpdate=true;render();window.__skipMarkerUpdate=old}
 function selectEstablecimiento(code){
