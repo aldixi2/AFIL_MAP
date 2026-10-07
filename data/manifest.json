@@ -1,20 +1,22 @@
 {
-  "generado": "2026-08-31 09:10:34",
-  "total_afiliados": 160743,
+  "generado": "2026-10-07 12:07:44",
+  "total_afiliados": 161208,
+  "por_mes_afil_2026": {
+    "1": 630,
+    "2": 829,
+    "3": 1054,
+    "4": 883,
+    "5": 816,
+    "6": 1273,
+    "7": 1091,
+    "8": 975,
+    "9": 1107,
+    "10": 65
+  },
   "total_establecimientos": 91,
   "establecimientos_con_afiliados": 90,
   "establecimientos_sin_afiliados": [
     "Centro De Salud Mental Comunitario Satipo"
   ],
-  "origen": "D:\\ANALISIS DE DATOS\\AFILIADOS BASE",
-  "por_mes_afil_2026": {
-    "1": 657,
-    "2": 868,
-    "3": 1107,
-    "4": 908,
-    "5": 858,
-    "6": 1288,
-    "7": 1116,
-    "8": 304
-  }
+  "origen": "D:\\ANALISIS DE DATOS\\AFILIADOS BASE"
 }
