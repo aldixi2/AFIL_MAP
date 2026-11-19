@@ -1,18 +1,6 @@
 {
-  "generado": "2026-10-23 16:23:05",
-  "total_afiliados": 160968,
-  "por_mes_afil_2026": {
-    "1": 604,
-    "2": 808,
-    "3": 1013,
-    "4": 875,
-    "5": 816,
-    "6": 1261,
-    "7": 1077,
-    "8": 973,
-    "9": 1082,
-    "10": 4763
-  },
+  "generado": "2026-11-19 08:41:27",
+  "total_afiliados": 161770,
   "total_establecimientos": 91,
   "establecimientos_con_afiliados": 90,
   "establecimientos_sin_afiliados": [
